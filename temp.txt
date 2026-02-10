@@ -1,0 +1,5 @@
+https://lkpoftucenhwnbgugdoc.supabase.co
+
+
+anon public key
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrcG9mdHVjZW5od25iZ3VnZG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NTEwMTIsImV4cCI6MjA4NjIyNzAxMn0.plukIjWuXdTdqsccRjuqYxdj02Z_uVL_a8jnIKqomss
