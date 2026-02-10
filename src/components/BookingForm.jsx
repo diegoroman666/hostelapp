@@ -129,16 +129,30 @@ export default function BookingForm() {
         return services.filter(service => serviceQuantities[service.id] > 0);
     };
 
-    const handleSubmit = async (e) => {
+    const [showReviewModal, setShowReviewModal] = useState(false);
+
+    const handleReview = (e) => {
         e.preventDefault();
-        setLoading(true);
         setMessage({ type: '', text: '' });
 
         try {
             if (new Date(formData.check_in) >= new Date(formData.check_out)) {
                 throw new Error('Check-out date must be after check-in date');
             }
+            setShowReviewModal(true);
+        } catch (error) {
+            setMessage({
+                type: 'error',
+                text: error.message
+            });
+        }
+    };
 
+    const confirmBooking = async () => {
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
             const selectedRoom = roomTypes.find(r => r.id === formData.room_type_id);
             const total = calculateTotal();
             const nights = calculateNights();
@@ -151,61 +165,58 @@ export default function BookingForm() {
             };
 
             if (demoMode) {
-                // Demo mode - show modal
+                // Demo mode
                 setBookingDetails({
                     ...bookingData,
                     room_type: selectedRoom.room_type,
                     nights: nights,
                     services: getSelectedServices()
                 });
+                setShowReviewModal(false);
                 setShowConfirmationModal(true);
-
-                setFormData({
-                    guest_name: '',
-                    guest_email: '',
-                    guest_phone: '',
-                    check_in: '',
-                    check_out: '',
-                    room_type_id: '',
-                    number_of_guests: 1
-                });
-                setServiceQuantities({});
+                resetForm();
             } else {
-                const { data, error } = await supabase
+                const { error } = await supabase
                     .from('bookings')
-                    .insert([bookingData])
-                    .select();
+                    .insert([bookingData]);
 
                 if (error) throw error;
 
                 setBookingDetails({
                     ...bookingData,
+                    id: 'PENDING-' + Date.now(), // Fallback ID since we can't read from DB instantly without auth
                     room_type: selectedRoom.room_type,
                     nights: nights,
                     services: getSelectedServices()
                 });
+                setShowReviewModal(false);
                 setShowConfirmationModal(true);
-
-                setFormData({
-                    guest_name: '',
-                    guest_email: '',
-                    guest_phone: '',
-                    check_in: '',
-                    check_out: '',
-                    room_type_id: '',
-                    number_of_guests: 1
-                });
-                setServiceQuantities({});
+                resetForm();
             }
 
         } catch (error) {
+            console.error('Booking Error:', error);
             setMessage({
                 type: 'error',
                 text: error.message || 'Failed to submit booking. Please try again.'
             });
+            setShowReviewModal(false);
         } finally {
             setLoading(false);
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            guest_name: '',
+            guest_email: '',
+            guest_phone: '',
+            check_in: '',
+            check_out: '',
+            room_type_id: '',
+            number_of_guests: 1
+        });
+        setServiceQuantities({});
     };
 
     const selectedRoom = roomTypes.find(r => r.id === formData.room_type_id);
@@ -231,7 +242,7 @@ export default function BookingForm() {
 
                     {/* Guest Form - Centered */}
                     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                        <form onSubmit={handleSubmit} className="glass-card">
+                        <form onSubmit={handleReview} className="glass-card">
                             <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)' }}>Guest Information</h3>
 
                             <div className="input-group">
@@ -344,7 +355,7 @@ export default function BookingForm() {
                                 style={{ width: '100%' }}
                                 disabled={loading}
                             >
-                                {loading ? 'Processing...' : '🌟 Confirm Reservation'}
+                                {loading ? 'Processing...' : '📋 Review & Confirm'}
                             </button>
                         </form>
                     </div>
@@ -440,6 +451,77 @@ export default function BookingForm() {
                     </div>
                 </div>
             </section>
+
+            {/* Review Modal */}
+            {showReviewModal && (
+                <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                            <h2 style={{ color: 'var(--accent-gold)', marginBottom: '0.5rem' }}>
+                                📋 Review Your Booking
+                            </h2>
+                            <p style={{ color: 'var(--text-secondary)' }}>
+                                Please check your details before confirming
+                            </p>
+                        </div>
+
+                        <div className="glass-card" style={{ marginBottom: '1.5rem', background: 'var(--glass-bg)' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', color: 'var(--text-secondary)' }}>
+                                <div>
+                                    <strong>Guest:</strong><br />{formData.guest_name}
+                                </div>
+                                <div>
+                                    <strong>Email:</strong><br />{formData.guest_email}
+                                </div>
+                                <div>
+                                    <strong>Check-in:</strong><br />{new Date(formData.check_in).toLocaleDateString()}
+                                </div>
+                                <div>
+                                    <strong>Check-out:</strong><br />{new Date(formData.check_out).toLocaleDateString()}
+                                </div>
+                                <div style={{ gridColumn: '1 / -1' }}>
+                                    <strong>Room:</strong><br />{selectedRoom?.room_type}
+                                </div>
+                            </div>
+
+                            {getSelectedServices().length > 0 && (
+                                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                                    <strong style={{ color: 'var(--accent-gold)' }}>Selected Services:</strong>
+                                    <ul style={{ listStyle: 'none', padding: 0, marginTop: '0.5rem', color: 'var(--text-secondary)' }}>
+                                        {getSelectedServices().map(s => (
+                                            <li key={s.id}>• {s.name} (x{serviceQuantities[s.id]})</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '2px solid var(--accent-scorpio)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '1.1rem' }}>Total Amount:</span>
+                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-gold)' }}>${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <button
+                                onClick={() => setShowReviewModal(false)}
+                                className="btn btn-outline"
+                                style={{ flex: 1 }}
+                                disabled={loading}
+                            >
+                                ✏️ Edit
+                            </button>
+                            <button
+                                onClick={confirmBooking}
+                                className="btn btn-primary"
+                                style={{ flex: 1 }}
+                                disabled={loading}
+                            >
+                                {loading ? 'Processing...' : '✅ Confirm Booking'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Confirmation Modal */}
             {showConfirmationModal && bookingDetails && (
