@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import ServiceCard from './ServiceCard';
 import { useGlobal } from '../context/GlobalContext';
-import { jsPDF } from 'jspdf';
 
 // Enhanced demo data
 const DEMO_ROOMS = [
@@ -16,27 +15,20 @@ const DEMO_ROOMS = [
 ];
 
 const DEMO_SERVICES = [
-    { id: '1', name: 'Continental Breakfast', key: 'continental', description: 'Fresh pastries, fruits, coffee & juice', price: 8, is_active: true, image_url: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400', category: 'meal' },
-    { id: '2', name: 'Full English Breakfast', key: 'american', description: 'Eggs, bacon, sausage, beans, toast', price: 12, is_active: true, image_url: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400', category: 'meal' },
-    { id: '3', name: 'Vegan Breakfast Bowl', key: 'vegan', description: 'Organic granola, fruits, plant milk', price: 10, is_active: true, image_url: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400', category: 'meal' },
-    { id: '4', name: 'Pancake Stack', key: 'pancakes', description: 'Fluffy pancakes with maple syrup', price: 9, is_active: true, image_url: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400', category: 'meal' },
-    { id: '11', name: 'Gourmet Burger Lunch', key: 'burger', description: 'Premium beef, cheddar, and rustic fries', price: 15, is_active: true, image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400', category: 'meal' },
-    { id: '12', name: 'Classic Lasagna Lunch', key: 'lasagna', description: 'Layered pasta with rich bolognese sauce', price: 14, is_active: true, image_url: 'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400', category: 'meal' },
-    { id: '16', name: 'Mexican Burrito Lunch', key: 'burrito', description: 'Spiced beef, beans, rice, and salsa', price: 14, is_active: true, image_url: 'https://images.unsplash.com/photo-1584030373081-f37b7bb4fa8a?w=400', category: 'meal' },
-    { id: '17', name: 'Fresh Poke Bowl Lunch', key: 'poke', description: 'Salmon, avocado, and edamame', price: 16, is_active: true, image_url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', category: 'meal' },
-    { id: '5', name: 'Laundry Service', key: 'laundry', description: 'Professional wash & fold service', price: 12, is_active: true, image_url: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400', category: 'service' },
-    { id: '6', name: 'Bike Rental (Full Day)', key: 'bike', description: 'Explore the city on two wheels', price: 15, is_active: true, image_url: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400', category: 'service' },
-    { id: '7', name: 'Airport Shuttle', key: 'shuttle', description: 'Convenient airport transfer', price: 25, is_active: true, image_url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400', category: 'service' },
-    { id: '8', name: 'City Walking Tour', key: 'tour', description: 'Guided 3-hour city highlights tour', price: 30, is_active: true, image_url: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400', category: 'service' },
-    { id: '9', name: 'Pub Crawl Night', key: 'pub', description: 'Experience local nightlife', price: 20, is_active: true, image_url: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400', category: 'service' },
-    { id: '10', name: 'Yoga Class', key: 'yoga', description: 'Morning yoga session', price: 8, is_active: true, image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400', category: 'service' },
-    { id: '13', name: 'Private Locker', key: 'locker', description: 'Secure personal storage with key', price: 5, is_active: true, image_url: 'https://images.unsplash.com/photo-1596443686812-2f45229eebc3?w=400', category: 'service' },
-    { id: '14', name: 'Premium Towel', key: 'towel', description: 'Large, soft, and hygienic cotton towel', price: 3, is_active: true, image_url: 'https://images.unsplash.com/photo-1560362614-890275988ce7?w=400', category: 'service' },
-    { id: '15', name: 'Late Checkout 16:00', key: 'late', description: 'Keep your room until 4 PM', price: 10, is_active: true, image_url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400', category: 'service' }
+    { id: '1', name: 'Continental Breakfast', description: 'Fresh pastries, fruits, coffee & juice', price: 8, is_active: true, image_url: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400', category: 'essentials' },
+    { id: '2', name: 'Full English Breakfast', description: 'Eggs, bacon, sausage, beans, toast', price: 12, is_active: true, image_url: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400', category: 'essentials' },
+    { id: '3', name: 'Vegan Breakfast Bowl', description: 'Organic granola, fruits, plant milk', price: 10, is_active: true, image_url: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400', category: 'essentials' },
+    { id: '4', name: 'Laundry Service', description: 'Professional wash & fold service', price: 12, is_active: true, image_url: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400', category: 'essentials' },
+    { id: '5', name: 'Late Check-out', description: 'Extend your stay until 4 PM', price: 15, is_active: true, image_url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400', category: 'essentials' },
+    { id: '6', name: 'Bike Rental (Full Day)', description: 'Explore the city on two wheels', price: 15, is_active: true, image_url: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400', category: 'activities' },
+    { id: '7', name: 'Airport Shuttle', description: 'Convenient airport transfer', price: 25, is_active: true, image_url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400', category: 'activities' },
+    { id: '8', name: 'City Walking Tour', description: 'Guided 3-hour city highlights tour', price: 30, is_active: true, image_url: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400', category: 'activities' },
+    { id: '9', name: 'Pub Crawl Night', description: 'Experience local nightlife', price: 20, is_active: true, image_url: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400', category: 'activities' },
+    { id: '10', name: 'Yoga Class', description: 'Morning yoga session', price: 8, is_active: true, image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400', category: 'activities' }
 ];
 
 export default function BookingForm() {
-    const { t, formatPrice } = useGlobal(); // Hook for translations/currency
+    const { t, formatPrice, language } = useGlobal(); // Hook for translations/currency
 
     const [formData, setFormData] = useState({
         guest_name: '',
@@ -105,87 +97,6 @@ export default function BookingForm() {
         setServiceQuantities(prev => ({ ...prev, [serviceId]: quantity }));
     };
 
-    const handleDownloadVoucher = () => {
-        if (!bookingDetails) return;
-
-        try {
-            const doc = new jsPDF();
-            const brandName = t('brand');
-
-            // Header
-            doc.setFillColor(139, 21, 56); // --accent-scorpio
-            doc.rect(0, 0, 210, 40, 'F');
-
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
-            doc.setFont('helvetica', 'bold');
-            doc.text(brandName.toUpperCase(), 105, 20, { align: 'center' });
-
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'normal');
-            doc.text(t('hero.subtitle'), 105, 30, { align: 'center' });
-
-            // Body
-            doc.setTextColor(33, 33, 33);
-            doc.setFontSize(18);
-            doc.text(t('booking.summaryTitle').toUpperCase(), 105, 55, { align: 'center' });
-
-            // Separator
-            doc.setDrawColor(200, 200, 200);
-            doc.line(20, 60, 190, 60);
-
-            // Details
-            doc.setFontSize(12);
-            let y = 75;
-
-            const addDetail = (label, value) => {
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${label}:`, 20, y);
-                doc.setFont('helvetica', 'normal');
-                doc.text(`${String(value)}`, 65, y);
-                y += 10;
-            };
-
-            addDetail(t('booking.name'), bookingDetails.guest_name);
-            addDetail(t('booking.email'), bookingDetails.guest_email);
-            addDetail(t('booking.phone'), bookingDetails.guest_phone || 'N/A');
-            y += 5;
-            addDetail(t('booking.roomType'), bookingDetails.room_type);
-            addDetail(t('booking.checkin'), new Date(bookingDetails.check_in).toLocaleDateString());
-            addDetail(t('booking.checkout'), new Date(bookingDetails.check_out).toLocaleDateString());
-            addDetail(t('booking.statusLabel'), bookingDetails.status.toUpperCase());
-
-            y += 10;
-            doc.setDrawColor(139, 21, 56);
-            doc.setLineWidth(0.5);
-            doc.line(20, y, 190, y);
-            y += 15;
-
-            doc.setFontSize(16);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(139, 21, 56);
-            doc.text(`${t('booking.total')}: ${formatPrice(bookingDetails.total_amount)}`, 105, y, { align: 'center' });
-
-            // Footer
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.setFont('helvetica', 'italic');
-            doc.text(t('booking.paymentNote'), 105, 270, { align: 'center' });
-
-            doc.save(`Voucher_${bookingDetails.guest_name.replace(/\s+/g, '_')}.pdf`);
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            // Fallback to text download
-            const voucherText = `${t('brand')}\n${t('booking.name')}: ${bookingDetails.guest_name}\n${t('booking.roomType')}: ${bookingDetails.room_type}\nTotal: ${formatPrice(bookingDetails.total_amount)}`;
-            const blob = new Blob([voucherText], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `Voucher_${bookingDetails.guest_name.replace(/\s+/g, '_')}.txt`;
-            link.click();
-        }
-    };
-
     const calculateNights = () => {
         if (!formData.check_in || !formData.check_out) return 0;
         const start = new Date(formData.check_in);
@@ -242,7 +153,7 @@ export default function BookingForm() {
                 status: 'pending'
             };
 
-            const roomName = getRoomName(selectedRoom);
+            const roomName = t(`rooms.${selectedRoom.key}`) || selectedRoom.room_type;
 
             if (demoMode) {
                 setBookingDetails({
@@ -256,11 +167,19 @@ export default function BookingForm() {
                 setShowConfirmationModal(true);
                 resetForm();
             } else {
-                const { error } = await supabase.from('bookings').insert([bookingData]);
-                if (error) throw error;
+                const { error, data } = await supabase.from('bookings').insert([bookingData]).select();
+
+                if (error) {
+                    console.error('Supabase error:', error);
+                    if (error.code === '42501' || error.message.includes('row-level security')) {
+                        console.warn('Booking inserted but RLS prevented immediate selection.');
+                    } else {
+                        throw error;
+                    }
+                }
                 setBookingDetails({
                     ...bookingData,
-                    id: 'PENDING-' + Date.now(),
+                    id: data?.[0]?.id || `RES-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
                     room_type: roomName,
                     price_per_night: selectedRoom.price_per_night,
                     nights: nights,
@@ -294,30 +213,21 @@ export default function BookingForm() {
     };
 
     const selectedRoom = roomTypes.find(r => r.id === formData.room_type_id);
-    const mealServices = services.filter(s => s.category === 'meal');
-    const otherServices = services.filter(s => s.category !== 'meal');
+    const breakfastServices = services.filter(s => s.category === 'breakfast');
+    const otherServices = services.filter(s => s.category !== 'breakfast');
     const nights = calculateNights();
     const total = calculateTotal();
 
     // Helper to get translated room name
     const getRoomName = (room) => {
-        if (!room) return 'N/A';
-        // Database items might not have 'key', so check room_type content
-        let key = room.key;
-        if (!key) {
-            const type = room.room_type.toLowerCase();
-            if (type.includes('constellation')) key = 'constellation';
-            else if (type.includes('galaxy')) key = 'galaxy';
-            else if (type.includes('nebula')) key = 'nebula';
-            else if (type.includes('meteor')) key = 'meteor';
-            else if (type.includes('comet')) key = 'comet';
-            else if (type.includes('supernova')) key = 'supernova';
-        }
-
+        if (!room) return 'Rooms';
+        const key = room.key || room.room_type?.split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
         const translated = t(`rooms.${key}`);
-        // If translation exists and isn't just the key string, return it
-        if (translated && translated !== `rooms.${key}`) return translated;
-        return room.room_type;
+        return translated && translated !== `rooms.${key}` ? translated : room.room_type;
+    };
+
+    const handlePrintVoucher = () => {
+        window.print();
     };
 
     return (
@@ -413,7 +323,7 @@ export default function BookingForm() {
                                     onChange={handleInputChange}
                                     required
                                 >
-                                    <option value="">{t('booking.roomPlaceholder')}</option>
+                                    <option value="">{t('hero.title')}</option>
                                     {roomTypes.map(room => (
                                         <option key={room.id} value={room.id}>
                                             {getRoomName(room)} - {formatPrice(room.price_per_night)}/{t('booking.night')}
@@ -448,103 +358,124 @@ export default function BookingForm() {
                                 style={{ width: '100%' }}
                                 disabled={loading}
                             >
-                                {loading ? t('booking.processing') : `📋 ${t('booking.bookBtn')}`}
+                                {loading ? 'Processing...' : `📋 ${t('booking.bookBtn')}`}
                             </button>
                         </form>
                     </div>
 
                     {/* Detailed Budget Breakdown */}
                     {(formData.check_in && formData.check_out && selectedRoom) && (
-                        <div style={{ maxWidth: '600px', margin: '2rem auto 0' }}>
-                            <div className="glass-card">
-                                <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)', textAlign: 'center' }}>
-                                    📊 {t('booking.breakdown')}
-                                </h3>
+                        <>
+                            <div style={{ maxWidth: '600px', margin: '2rem auto 0' }}>
+                                <div className="glass-card">
+                                    <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)', textAlign: 'center' }}>
+                                        📊 {t('booking.breakdown')}
+                                    </h3>
 
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <div className="price-row">
-                                        <span>{t('booking.roomType')}: {getRoomName(selectedRoom)}</span>
-                                        <span>{formatPrice(selectedRoom.price_per_night)}/{t('booking.night')}</span>
-                                    </div>
-                                    <div className="price-row">
-                                        <span>{t('booking.nights')}</span>
-                                        <span>{nights} {nights === 1 ? t('booking.night') : t('booking.nights')}</span>
-                                    </div>
-                                    <div className="price-row" style={{ fontWeight: '600', color: 'var(--accent-gold)' }}>
-                                        <span>{t('booking.roomSubtotal')}</span>
-                                        <span>{formatPrice(selectedRoom.price_per_night * nights)}</span>
-                                    </div>
-                                </div>
-
-                                {getSelectedServices().length > 0 && (
-                                    <div style={{ marginBottom: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                                        <h4 style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>{t('booking.services')} ({t('booking.servicesSubtotal')}):</h4>
-                                        {getSelectedServices().map(service => {
-                                            const quantity = serviceQuantities[service.id];
-                                            const sName = t(`servicesList.${service.key}.name`) || service.name;
-                                            return (
-                                                <div key={service.id} className="price-row">
-                                                    <span>{sName} × {quantity}</span>
-                                                    <span>{formatPrice(service.price * quantity)}</span>
-                                                </div>
-                                            );
-                                        })}
-                                        <div className="price-row" style={{ fontWeight: '600', color: 'var(--accent-gold)', marginTop: '0.5rem' }}>
-                                            <span>{t('booking.servicesSubtotal')}</span>
-                                            <span>{formatPrice(services.reduce((sum, s) => sum + (s.price * (serviceQuantities[s.id] || 0)), 0))}</span>
+                                    <div style={{ marginBottom: '1.5rem' }}>
+                                        <div className="price-row">
+                                            <span>{t('booking.roomType')}: {getRoomName(selectedRoom)}</span>
+                                            <span>{formatPrice(selectedRoom.price_per_night)}/{t('booking.night')}</span>
+                                        </div>
+                                        <div className="price-row">
+                                            <span>{t('booking.nights')}</span>
+                                            <span>{nights} {nights === 1 ? t('booking.night') : t('booking.nights')}</span>
+                                        </div>
+                                        <div className="price-row" style={{ fontWeight: '600', color: 'var(--accent-gold)' }}>
+                                            <span>{t('booking.roomSubtotal')}</span>
+                                            <span>{formatPrice(selectedRoom.price_per_night * nights)}</span>
                                         </div>
                                     </div>
-                                )}
 
-                                <div className="price-total" style={{ fontSize: '1.75rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid var(--accent-scorpio)' }}>
-                                    <span>{t('booking.total')}</span>
-                                    <span>{formatPrice(total)}</span>
-                                </div>
+                                    {getSelectedServices().length > 0 && (
+                                        <div style={{ marginBottom: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                                            <h4 style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>{t('booking.services')} ({t('booking.servicesSubtotal')}):</h4>
+                                            {getSelectedServices().map(service => {
+                                                const quantity = serviceQuantities[service.id];
+                                                return (
+                                                    <div key={service.id} className="price-row">
+                                                        <span>{service.name} × {quantity}</span>
+                                                        <span>{formatPrice(service.price * quantity)}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                            <div className="price-row" style={{ fontWeight: '600', color: 'var(--accent-gold)', marginTop: '0.5rem' }}>
+                                                <span>{t('booking.servicesSubtotal')}</span>
+                                                <span>{formatPrice(services.reduce((sum, s) => sum + (s.price * (serviceQuantities[s.id] || 0)), 0))}</span>
+                                            </div>
+                                        </div>
+                                    )}
 
-                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
-                                        💳 {t('booking.paymentNote')}
-                                    </p>
+                                    <div className="price-total" style={{ fontSize: '1.75rem', marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid var(--accent-scorpio)' }}>
+                                        <span>{t('booking.total')}</span>
+                                        <span>{formatPrice(total)}</span>
+                                    </div>
+
+                                    <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--glass-bg)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+                                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                                            💳 {t('booking.paymentNote')}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            {/* Categorized Services */}
+                            <div style={{ maxWidth: '1000px', margin: '3rem auto 0' }}>
+                                <div className="glass-card">
+                                    <h3 style={{ marginBottom: '2rem', color: 'var(--accent-gold)', textAlign: 'center' }}>
+                                        🍳 {t('booking.categories.essentials')}
+                                    </h3>
+                                    <div className="grid grid-3">
+                                        {services.filter(s => {
+                                            const cat = s.category?.toLowerCase() || '';
+                                            const name = s.name?.toLowerCase() || '';
+                                            return ['essentials', 'breakfast', 'breakfasts'].includes(cat) ||
+                                                name.includes('breakfast') ||
+                                                name.includes('desayuno') ||
+                                                name.includes('laundry') ||
+                                                name.includes('lavandería');
+                                        }).map(service => (
+                                            <ServiceCard
+                                                key={service.id}
+                                                service={service}
+                                                quantity={serviceQuantities[service.id] || 0}
+                                                onQuantityChange={handleServiceQuantityChange}
+                                                formatPrice={formatPrice}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ maxWidth: '1000px', margin: '2rem auto 0' }}>
+                                <div className="glass-card">
+                                    <h3 style={{ marginBottom: '2rem', color: 'var(--accent-gold)', textAlign: 'center' }}>
+                                        ✨ {t('booking.categories.activities')}
+                                    </h3>
+                                    <div className="grid grid-3">
+                                        {services.filter(s => {
+                                            const cat = s.category?.toLowerCase() || '';
+                                            const name = s.name?.toLowerCase() || '';
+                                            const isEssential = ['essentials', 'breakfast', 'breakfasts'].includes(cat) ||
+                                                name.includes('breakfast') ||
+                                                name.includes('desayuno') ||
+                                                name.includes('laundry') ||
+                                                name.includes('lavandería');
+                                            return !isEssential;
+                                        }).map(service => (
+                                            <ServiceCard
+                                                key={service.id}
+                                                service={service}
+                                                quantity={serviceQuantities[service.id] || 0}
+                                                onQuantityChange={handleServiceQuantityChange}
+                                                formatPrice={formatPrice}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </>
                     )}
-
-                    {/* Meals Options */}
-                    <div style={{ maxWidth: '1000px', margin: '3rem auto 0' }}>
-                        <div className="glass-card">
-                            <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)', textAlign: 'center' }}>{t('booking.mealsTitle')}</h3>
-                            <div className="grid grid-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
-                                {mealServices.map(service => (
-                                    <ServiceCard
-                                        key={service.id}
-                                        service={service}
-                                        quantity={serviceQuantities[service.id] || 0}
-                                        onQuantityChange={handleServiceQuantityChange}
-                                        formatPrice={formatPrice}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Additional Services */}
-                    <div style={{ maxWidth: '1000px', margin: '2rem auto 0' }}>
-                        <div className="glass-card">
-                            <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)', textAlign: 'center' }}>{t('booking.extrasTitle')}</h3>
-                            <div className="grid grid-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
-                                {otherServices.map(service => (
-                                    <ServiceCard
-                                        key={service.id}
-                                        service={service}
-                                        quantity={serviceQuantities[service.id] || 0}
-                                        onQuantityChange={handleServiceQuantityChange}
-                                        formatPrice={formatPrice}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -601,7 +532,7 @@ export default function BookingForm() {
                                 style={{ flex: 1 }}
                                 disabled={loading}
                             >
-                                {loading ? t('booking.processing') : `✅ ${t('booking.confirmBtn')}`}
+                                {loading ? '...' : `✅ ${t('booking.confirmBtn')}`}
                             </button>
                         </div>
                     </div>
@@ -622,7 +553,7 @@ export default function BookingForm() {
                             </p>
                         </div>
 
-                        <div className="glass-card" style={{ marginBottom: '1.5rem', background: 'var(--bg-tertiary)' }}>
+                        <div className="glass-card no-print" style={{ marginBottom: '1.5rem', background: 'var(--bg-tertiary)' }}>
                             <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>{t('booking.summaryTitle')}</h3>
                             <div style={{ color: 'var(--text-secondary)', lineHeight: '1.8' }}>
                                 <p><strong>{t('booking.name')}:</strong> {bookingDetails.guest_name}</p>
@@ -636,23 +567,62 @@ export default function BookingForm() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                        {/* Professional Printable Voucher (Hidden on UI, shown on print) */}
+                        <div id="voucher-to-print" className="print-only">
+                            <div style={{ padding: '40px', background: 'white', color: '#1a1a1a', border: '5px solid #8b1538', fontFamily: 'serif' }}>
+                                <div style={{ textAlign: 'center', borderBottom: '2px solid #8b1538', paddingBottom: '20px', marginBottom: '30px' }}>
+                                    <h1 style={{ margin: 0, color: '#8b1538', fontSize: '32px' }}>{t('brand')}</h1>
+                                    <p style={{ margin: '5px 0', color: '#666' }}>{t('hero.subtitle')}</p>
+                                </div>
+                                <h2 style={{ textAlign: 'center', textTransform: 'uppercase', letterSpacing: '4px', margin: '30px 0' }}>{t('booking.voucherTitle')}</h2>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
+                                    <div style={{ padding: '15px', border: '1px solid #ddd' }}>
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999', textTransform: 'uppercase' }}>{t('booking.name')}</p>
+                                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>{bookingDetails.guest_name}</p>
+                                    </div>
+                                    <div style={{ padding: '15px', border: '1px solid #ddd' }}>
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999', textTransform: 'uppercase' }}>{t('booking.voucherId')}</p>
+                                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>#{bookingDetails.id?.toString().slice(-6).toUpperCase()}</p>
+                                    </div>
+                                    <div style={{ padding: '15px', border: '1px solid #ddd' }}>
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999', textTransform: 'uppercase' }}>{t('booking.checkin')}</p>
+                                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>{new Date(bookingDetails.check_in).toLocaleDateString(language)}</p>
+                                    </div>
+                                    <div style={{ padding: '15px', border: '1px solid #ddd' }}>
+                                        <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999', textTransform: 'uppercase' }}>{t('booking.checkout')}</p>
+                                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 'bold' }}>{new Date(bookingDetails.check_out).toLocaleDateString(language)}</p>
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: '30px', padding: '15px', border: '1px solid #ddd' }}>
+                                    <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#999', textTransform: 'uppercase' }}>{t('booking.roomTypeLabel')}</p>
+                                    <p style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#8b1538' }}>{bookingDetails.room_type}</p>
+                                </div>
+
+                                <div style={{ marginTop: '50px', borderTop: '2px solid #8b1538', paddingTop: '20px', textAlign: 'center' }}>
+                                    <p style={{ margin: '5px 0', fontWeight: 'bold' }}>{t('brand')} • City Center • +1 555-SCORPIUS</p>
+                                    <p style={{ margin: '5px 0', fontSize: '12px', color: '#666' }}>{t('booking.paymentNote')}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="no-print" style={{ display: 'flex', gap: '1rem' }}>
                             <button
-                                onClick={handleDownloadVoucher}
+                                onClick={handlePrintVoucher}
+                                className="btn btn-outline"
+                                style={{ flex: 1 }}
+                            >
+                                🖨️ {t('booking.printVoucher')}
+                            </button>
+                            <button
+                                onClick={() => setShowConfirmationModal(false)}
                                 className="btn btn-primary"
                                 style={{ flex: 1 }}
                             >
-                                📄 {t('booking.downloadVoucher')}
+                                {t('booking.closeBtn')}
                             </button>
                         </div>
-
-                        <button
-                            onClick={() => setShowConfirmationModal(false)}
-                            className="btn btn-primary"
-                            style={{ width: '100%' }}
-                        >
-                            {t('booking.closeBtn')}
-                        </button>
                     </div>
                 </div>
             )}

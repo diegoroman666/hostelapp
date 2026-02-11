@@ -38,20 +38,24 @@
   /* Fonts */
   --font-heading: 'Orbitron', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --font-logo: 'Outfit', sans-serif;
 }
 
 /* Day Theme */
 [data-theme="day"] {
-  --bg-primary: #e0f2fe;
-  --bg-secondary: #bae6fd;
-  --bg-tertiary: #7dd3fc;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
 
-  --text-primary: #0c4a6e;
-  --text-secondary: #075985;
-  --text-muted: #0369a1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(15, 23, 42, 0.1);
   --glass-shadow: rgba(0, 0, 0, 0.1);
 }
 
@@ -363,6 +367,11 @@ p {
 .scorpio-symbol {
   font-size: 2rem;
   transition: filter 0.3s;
+  background: transparent !important;
+  border: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-text {
@@ -1203,63 +1212,36 @@ select.input-field {
 }
 
 /* ============================================
-   RESPONSIVENESS POLISH & PRINT
+   PRINT STYLES (VOUCHER)
    ============================================ */
-@media (max-width: 600px) {
-  .hero-title {
-    font-size: 2.8rem;
+@media print {
+  body * {
+    visibility: hidden;
   }
 
-  .container {
-    padding: 0 1rem;
+  #voucher-to-print,
+  #voucher-to-print * {
+    visibility: visible;
   }
 
-  .glass-card {
-    padding: 1.25rem;
+  #voucher-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .no-print {
+    display: none !important;
   }
 }
 
+.print-only {
+  display: none;
+}
+
 @media print {
-
-  .navbar,
-  .footer,
-  .btn,
-  .sidebar-drawer,
-  .sidebar-overlay {
-    display: none !important;
-  }
-
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .modal-overlay {
-    position: static !important;
-    background: none !important;
-  }
-
-  .modal-content {
-    box-shadow: none !important;
-    border: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: black !important;
-  }
-
-  .glass-card {
-    background: white !important;
-    border: 1px solid #ccc !important;
-    color: black !important;
-    box-shadow: none !important;
-  }
-
-  h2,
-  h3,
-  p,
-  strong {
-    color: black !important;
+  .print-only {
+    display: block !important;
   }
 }

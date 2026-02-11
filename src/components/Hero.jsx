@@ -47,6 +47,8 @@ export default function Hero() {
             )}
             <div className="hero-content">
                 <h1 className="hero-title">
+                    <span className="scorpio-symbol" style={{ fontSize: '4rem' }}>♏</span>
+                    <br />
                     {t('brand')}
                 </h1>
                 <p className="hero-subtitle">{t('hero.subtitle')}</p>
