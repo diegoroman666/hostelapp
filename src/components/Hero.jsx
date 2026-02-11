@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function Hero() {
+    const { t } = useGlobal();
     const [settings, setSettings] = useState({
-        hostel_name: 'SCORPIUS HOSTEL',
-        hero_description: 'Where the stars align for unforgettable journeys. Experience cosmic comfort in the heart of the city.',
         hero_image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=600&fit=crop'
     });
     const [loading, setLoading] = useState(true);
@@ -20,21 +20,17 @@ export default function Hero() {
                 .from('site_settings')
                 .select('key, value');
 
-            if (error) {
-                console.warn('Using demo data - Supabase not configured:', error.message);
-                setLoading(false);
-                return;
-            }
-
             if (data && data.length > 0) {
                 const settingsObj = {};
                 data.forEach(item => {
-                    settingsObj[item.key] = item.value;
+                    if (item.key === 'hero_image') {
+                        settingsObj[item.key] = item.value;
+                    }
                 });
                 setSettings(prev => ({ ...prev, ...settingsObj }));
             }
         } catch (error) {
-            console.warn('Using demo data - Supabase not configured:', error.message);
+            console.warn('Using demo data:', error.message);
         } finally {
             setLoading(false);
         }
@@ -45,19 +41,17 @@ export default function Hero() {
             {settings.hero_image && (
                 <img
                     src={settings.hero_image}
-                    alt="Scorpius Hostel"
+                    alt={t('brand')}
                     className="hero-background"
                 />
             )}
             <div className="hero-content">
                 <h1 className="hero-title">
-                    <span className="scorpio-symbol" style={{ fontSize: '4rem' }}>♏</span>
-                    <br />
-                    {settings.hostel_name}
+                    {t('brand')}
                 </h1>
-                <p className="hero-subtitle">{settings.hero_description}</p>
+                <p className="hero-subtitle">{t('hero.subtitle')}</p>
                 <a href="#booking" className="btn btn-primary btn-lg">
-                    🌟 Reserve Your Constellation
+                    🌟 {t('hero.title')}
                 </a>
             </div>
         </section>

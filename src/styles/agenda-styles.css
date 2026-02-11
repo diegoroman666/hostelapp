@@ -1,0 +1,29 @@
+/* ============================================
+   BADGES & AGENDA VIEW
+   ============================================ */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--radius-full);
+    color: #fff;
+}
+
+.badge-primary {
+    background: var(--accent-scorpio);
+    box-shadow: 0 2px 5px rgba(139, 21, 56, 0.4);
+}
+
+.mobile-agenda-view .glass-card {
+    transition: transform 0.2s, background 0.2s;
+}
+
+.mobile-agenda-view .glass-card:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.1);
+}

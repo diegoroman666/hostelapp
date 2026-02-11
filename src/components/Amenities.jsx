@@ -1,66 +1,69 @@
 import React from 'react';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function Amenities() {
+    const { t } = useGlobal();
+
     const amenities = [
         {
             icon: '🍳',
-            title: 'Gourmet Kitchen',
-            description: 'Fully equipped kitchen with premium appliances'
+            title: t('amenities.kitchen.title'),
+            description: t('amenities.kitchen.desc')
         },
         {
             icon: '🔒',
-            title: 'Secure Lockers',
-            description: 'Personal lockers in every room'
+            title: t('amenities.lockers.title'),
+            description: t('amenities.lockers.desc')
         },
         {
             icon: '📶',
-            title: 'High-Speed WiFi',
-            description: 'Free fiber optic internet throughout'
+            title: t('amenities.wifi.title'),
+            description: t('amenities.wifi.desc')
         },
         {
             icon: '🏋️',
-            title: 'Fitness Center',
-            description: 'Modern gym with cardio and weights'
+            title: t('amenities.gym.title'),
+            description: t('amenities.gym.desc')
         },
         {
             icon: '🧘',
-            title: 'Yoga Studio',
-            description: 'Daily morning yoga sessions'
+            title: t('amenities.yoga.title'),
+            description: t('amenities.yoga.desc')
         },
         {
             icon: '🎮',
-            title: 'Game Room',
-            description: 'Pool table, board games, and console gaming'
+            title: t('amenities.game.title'),
+            description: t('amenities.game.desc')
         },
         {
             icon: '💼',
-            title: 'Coworking Space',
-            description: 'Quiet workspace with desks and power outlets'
+            title: t('amenities.coworking.title'),
+            description: t('amenities.coworking.desc')
         },
         {
             icon: '🌿',
-            title: 'Rooftop Terrace',
-            description: 'Panoramic city views and BBQ area'
+            title: t('amenities.terrace.title'),
+            description: t('amenities.terrace.desc')
         },
         {
             icon: '🎬',
-            title: 'Movie Nights',
-            description: 'Weekly film screenings in our lounge'
+            title: t('amenities.movie.title'),
+            description: t('amenities.movie.desc')
         },
         {
             icon: '🔐',
-            title: '24/7 Reception',
-            description: 'Round-the-clock assistance and security'
+            title: t('amenities.reception.title'),
+            description: t('amenities.reception.desc')
         },
         {
             icon: '🧺',
-            title: 'Laundry Facilities',
-            description: 'Washers and dryers available'
+            title: t('amenities.laundry.title'),
+            description: t('amenities.laundry.desc')
         },
         {
             icon: '🚿',
-            title: 'Hot Showers',
-            description: 'Clean, modern bathrooms with hot water'
+            title: t('amenities.showers.title'),
+            description: t('amenities.showers.desc')
         }
     ];
 

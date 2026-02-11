@@ -8,6 +8,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import Dashboard from './components/ManagerDashboard/Dashboard';
+import { GlobalProvider } from './context/GlobalContext';
 import './styles/index.css';
 
 function HomePage() {
@@ -23,18 +24,20 @@ function HomePage() {
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/booking" element={<><BookingForm /><Contact /></>} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                </Routes>
-                <Footer />
-            </div>
-        </Router>
+        <GlobalProvider>
+            <Router>
+                <div className="App">
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/booking" element={<><BookingForm /><Contact /></>} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Routes>
+                    <Footer />
+                </div>
+            </Router>
+        </GlobalProvider>
     );
 }
 

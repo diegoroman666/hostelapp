@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Scorpius Hostel</string>
+    <string name="title_activity_main">Scorpius Hostel</string>
+    <string name="package_name">com.scorpius.hostel</string>
+    <string name="custom_url_scheme">com.scorpius.hostel</string>
+</resources>

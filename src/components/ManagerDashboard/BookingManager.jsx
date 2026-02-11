@@ -105,7 +105,7 @@ export default function BookingManager() {
                 </div>
             ) : (
                 <div className="glass-card" style={{ overflowX: 'auto' }}>
-                    <table className="table">
+                    <table className="table" style={{ minWidth: '600px' }}>
                         <thead>
                             <tr>
                                 <th>Guest Name</th>
