@@ -43,7 +43,7 @@ Deberías ver al final una tabla con las políticas creadas:
 1. Ve a: http://localhost:5173/login
 2. Ingresa:
    - Email: `manager@scorpius.com`
-   - Password: `Scorpius2024!`
+   - Password: `Mg7!xL$9pQw2#vR`
 3. Haz clic en **"Login"**
 
 ---

@@ -63,7 +63,7 @@ Esta guía te llevará paso a paso para configurar la base de datos de Supabase 
 2. Selecciona **"Create new user"**
 3. Completa:
    - **Email**: `manager@scorpius.com`
-   - **Password**: `Scorpius2024!`
+   - **Password**: `Mg7!xL$9pQw2#vR`
    - ✅ **IMPORTANTE**: Marca la casilla **"Auto Confirm User"**
 4. Haz clic en **"Create user"**
 
@@ -152,7 +152,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 1. En la app, haz clic en **"Manager Login"**
 2. Ingresa:
    - Email: `manager@scorpius.com`
-   - Password: `Scorpius2024!`
+   - Password: `Mg7!xL$9pQw2#vR`
 3. Deberías entrar al **Dashboard**
 
 ### 8.5 Probar el Dashboard

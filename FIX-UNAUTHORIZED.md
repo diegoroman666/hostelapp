@@ -74,7 +74,7 @@ SELECT * FROM managers;
 1. Ve a tu aplicación: http://localhost:5173/login
 2. Ingresa:
    - Email: `manager@scorpius.com`
-   - Password: `Scorpius2024!`
+   - Password: `Mg7!xL$9pQw2#vR`
 3. Haz clic en **"Login"**
 4. **¡Deberías entrar al Dashboard sin errores!** 🎉
 

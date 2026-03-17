@@ -1,0 +1,102 @@
+🌌 Super-Plantilla: Scorpius Hostel & Business Base
+Esta plantilla contiene todo lo necesario para recrear, clonar y adaptar este proyecto a cualquier servicio (hoteles, restaurantes, cabañas, etc.).
+
+🏗️ 1. Arquitectura del Proyecto
+Frontend: React + Vite (Veloz y moderno).
+Estilos: CSS Vanilla (Diseño premium sin dependencias pesadas).
+Base de Datos & Auth: Supabase (PostgreSQL en la nube).
+Móvil: Capacitor (Convierte la web en App nativa para Android/iOS).
+Deploy: GitHub -> Netlify/Vercel (Automático al hacer push).
+🗄️ 2. Base de Datos (Supabase)
+Script Definitivo (Tablas + RLS Fix)
+Usa este SQL en el SQL Editor de Supabase. Incluye el último "fix" que garantiza acceso total al administrador.
+
+sql
+-- TABLAS BASE
+CREATE TABLE services (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  price NUMERIC(10, 2),
+  image_url TEXT,
+  category TEXT DEFAULT 'service',
+  is_active BOOLEAN DEFAULT true
+);
+CREATE TABLE room_prices (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  room_type TEXT NOT NULL,
+  price_per_night NUMERIC(10, 2),
+  is_active BOOLEAN DEFAULT true
+);
+CREATE TABLE site_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  key TEXT UNIQUE NOT NULL,
+  value TEXT NOT NULL
+);
+CREATE TABLE managers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT
+);
+CREATE TABLE bookings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  guest_name TEXT NOT NULL,
+  check_in DATE NOT NULL,
+  check_out DATE NOT NULL,
+  status TEXT DEFAULT 'pending'
+);
+-- CONFIGURACIÓN RLS (El FIX Definitivo)
+-- Permite que el administrador (basado en su email de Auth) gestione TODO.
+-- Política para que el ADMIN tenga acceso total (Ejemplo para services)
+CREATE POLICY "admin_full_access"
+  ON services FOR ALL
+  TO authenticated
+  USING (EXISTS (SELECT 1 FROM managers WHERE managers.email = auth.jwt()->>'email'))
+  WITH CHECK (EXISTS (SELECT 1 FROM managers WHERE managers.email = auth.jwt()->>'email'));
+-- El público solo puede ver lo activo
+CREATE POLICY "public_read_active"
+  ON services FOR SELECT
+  USING (is_active = true);
+📱 3. Uso de Capacitor (Móvil)
+Para compilar la App y generar los archivos de instalación:
+
+Comandos Principales
+Sincronizar cambios:
+npm run build (Genera la carpeta dist)
+npx cap sync (Lleva la web a las carpetas Android/iOS)
+
+Android (APK y AAB):
+
+Abre Android Studio: npx cap open android
+En Android Studio: Build > Build Bundle(s) / APK(s) > Build APK (Para pruebas).
+Para subir a la tienda: Build > Generate Signed Bundle / APK (Genera el .aab).
+iOS (IPA en Mac):
+
+Abre Xcode: npx cap open ios
+En Xcode: Selecciona el destino "Any iOS Device".
+Product > Archive.
+Luego en el Organizer, Distribute App para generar el .ipa.
+🌐 4. CMS (Gestión de Contenido)
+El proyecto usa la tabla site_settings como CMS dinámico. Esto permite cambiar:
+
+Títulos del Hero.
+Imágenes principales.
+Descripciones. Sin necesidad de tocar el código ni volver a compilar la app.
+🚀 5. Flujo de Git y Deploy (Netlify/Vercel)
+Automatización Total
+GitHub: Al hacer git push origin main, el código se sube a la nube.
+Netlify/Vercel: Detectan el cambio automáticamente y hacen un nuevo "Build".
+Variables de Entorno: No olvides configurar VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en la sección de Settings del panel de control de tu hosting.
+🛠️ 6. Resumen de Comandos del Proyecto
+npm install: Instala todas las librerías.
+npm run dev: Inicia el modo desarrollo.
+npm run build: Prepara la web para producción.
+npx cap add android: Añade soporte Android.
+npx cap sync: Actualiza la app móvil con el último código web.
+💡 Consejo para el Futuro
+Si quieres cambiar el contexto (de Hotel a Restaurante):
+
+Cambia los nombres en site_settings.
+Modifica la tabla room_prices por menu_items.
+Ajusta el BookingForm.jsx para pedir "Mesa" en lugar de "Habitación".
+¡Listo! Tienes una base sólida, segura y profesional. Tu nueva contraseña segura es: Mg7!xL$9pQw2#vR

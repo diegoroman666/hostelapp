@@ -45,8 +45,8 @@ To enable real database functionality, follow these steps:
 1. Go to **"Authentication"** > **"Users"**
 2. Click **"Add user"** > **"Create new user"**
 3. Enter:
-   - Email: `manager@hostel.com`
-   - Password: `Manager123!`
+   - Email: `manager@scorpius.com`
+   - Password: `Mg7!xL$9pQw2#vR`
    - ✅ Check "Auto Confirm User"
 4. Click **"Create user"**
 
@@ -77,8 +77,8 @@ To enable real database functionality, follow these steps:
 3. Try making a booking - it will save to database!
 4. Login as manager:
    - Click "Manager Login"
-   - Email: `manager@hostel.com`
-   - Password: `Manager123!`
+   - Email: `manager@scorpius.com`
+   - Password: `Mg7!xL$9pQw2#vR`
 5. Manage services, rooms, bookings, and settings!
 
 ---
@@ -87,7 +87,7 @@ To enable real database functionality, follow these steps:
 
 Once Supabase is configured:
 
-1. **Login to Dashboard** (manager@hostel.com / Manager123!)
+1. **Login to Dashboard** (manager@scorpius.com / Mg7!xL$9pQw2#vR)
 2. **Go to Settings tab**:
    - Change hostel name
    - Update description

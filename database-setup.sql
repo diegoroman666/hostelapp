@@ -229,7 +229,7 @@ ON CONFLICT DO NOTHING;
 -- 1. Go to Authentication > Users in Supabase
 -- 2. Click "Add user" > "Create new user"
 -- 3. Email: manager@scorpius.com
--- 4. Password: Scorpius2024!
+-- 4. Password: Mg7!xL$9pQw2#vR (Contraseña Segura)
 -- 5. Check "Auto Confirm User"
 -- 6. Click "Create user"
 -- ============================================

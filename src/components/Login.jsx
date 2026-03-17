@@ -59,7 +59,7 @@ export default function Login() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    placeholder="manager@hostel.com"
+                                    placeholder="manager@scorpius.com"
                                 />
                             </div>
 
@@ -91,9 +91,6 @@ export default function Login() {
                             </button>
                         </form>
 
-                        <p style={{ marginTop: '1rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                            Default credentials: manager@hostel.com / Manager123!
-                        </p>
                     </div>
                 </div>
             </div>

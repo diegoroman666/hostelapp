@@ -39,8 +39,8 @@ This guide will walk you through deploying your hostel management system to prod
 1. In Supabase dashboard, go to **"Authentication"** > **"Users"**
 2. Click **"Add user"** dropdown > **"Create new user"**
 3. Fill in the credentials:
-   - **Email**: `manager@hostel.com`
-   - **Password**: `Manager123!`
+   - **Email**: `manager@scorpius.com`
+   - **Password**: `Mg7!xL$9pQw2#vR`
    - **Auto Confirm User**: ✅ Check this box
 4. Click **"Create user"**
 
@@ -117,8 +117,8 @@ This guide will walk you through deploying your hostel management system to prod
 1. Navigate to your deployed URL
 2. Click **"Manager Login"** in the navigation bar
 3. Login with:
-   - **Email**: `manager@hostel.com`
-   - **Password**: `Manager123!`
+   - **Email**: `manager@scorpius.com`
+   - **Password**: `Mg7!xL$9pQw2#vR`
 4. You'll be redirected to the Dashboard
 
 ### ⚠️ IMPORTANT: Change Default Password
