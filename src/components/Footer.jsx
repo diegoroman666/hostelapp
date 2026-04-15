@@ -197,7 +197,7 @@ export default function Footer() {
                             Developed by <span style={{
                                 color: 'var(--accent-gold)',
                                 fontWeight: '600'
-                            }}>SCORPIS HOSTEL TEAM IEI 2026 INACAP </span>
+                            }}>INFORMATIK 2026</span>
                         </p>
                     </div>
 
