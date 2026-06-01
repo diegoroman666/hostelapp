@@ -1,45 +1,48 @@
 import React from 'react';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function Contact() {
+    const { t } = useGlobal();
+
     return (
         <section className="section" style={{ background: 'var(--bg-secondary)' }}>
             <div className="container">
-                <h2 className="section-title">Find Us Among the Stars</h2>
+                <h2 className="section-title">{t('contact.title')}</h2>
                 <p className="section-subtitle">
-                    Visit us or get in touch - we're here to make your stay unforgettable
+                    {t('contact.subtitle')}
                 </p>
 
                 <div className="grid grid-3" style={{ marginTop: '3rem' }}>
                     {/* Location */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📍</div>
-                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>Location</h3>
+                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.location')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            123 Constellation Avenue<br />
-                            Downtown District<br />
-                            City Center, 12345
+                            {t('contact.address1')}<br />
+                            {t('contact.address2')}<br />
+                            {t('contact.address3')}
                         </p>
                     </div>
 
                     {/* Contact */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📞</div>
-                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>Contact</h3>
+                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.contactCard')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            Phone: +1 (555) 123-4567<br />
-                            Email: info@scorpius.com<br />
-                            WhatsApp: +1 (555) 987-6543
+                            {t('contact.phoneLine')}<br />
+                            {t('contact.emailLine')}<br />
+                            {t('contact.whatsappLine')}
                         </p>
                     </div>
 
                     {/* Hours */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🕐</div>
-                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>Reception Hours</h3>
+                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.hoursCard')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            24/7 Reception<br />
-                            Check-in: 2:00 PM<br />
-                            Check-out: 11:00 AM
+                            {t('contact.reception247')}<br />
+                            {t('contact.checkInTime')}<br />
+                            {t('contact.checkOutTime')}
                         </p>
                     </div>
                 </div>
@@ -57,9 +60,9 @@ export default function Contact() {
                     }}>
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🗺️</div>
-                            <p>Google Maps Integration</p>
+                            <p>{t('contact.mapPlaceholder')}</p>
                             <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                                (Add your Google Maps embed code here)
+                                {t('contact.mapNote')}
                             </p>
                         </div>
                     </div>

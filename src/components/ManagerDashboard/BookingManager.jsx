@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function BookingManager() {
+    const { t, formatPrice, language } = useGlobal();
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
@@ -40,12 +42,12 @@ export default function BookingManager() {
             if (error) throw error;
             fetchBookings();
         } catch (error) {
-            alert('Error updating booking: ' + error.message);
+            alert(t('bookingManager.errorUpdate') + error.message);
         }
     };
 
     const deleteBooking = async (id) => {
-        if (!confirm('Are you sure you want to delete this booking?')) return;
+        if (!confirm(t('bookingManager.confirmDelete'))) return;
 
         try {
             const { error } = await supabase
@@ -56,7 +58,7 @@ export default function BookingManager() {
             if (error) throw error;
             fetchBookings();
         } catch (error) {
-            alert('Error deleting booking: ' + error.message);
+            alert(t('bookingManager.errorDelete') + error.message);
         }
     };
 
@@ -64,60 +66,72 @@ export default function BookingManager() {
         ? bookings
         : bookings.filter(b => b.status === filter);
 
+    // Translate the raw status from DB ("pending", "confirmed", …) for display
+    const translateStatus = (status) => {
+        const map = {
+            pending: 'bookingManager.statusPending',
+            confirmed: 'bookingManager.statusConfirmed',
+            cancelled: 'bookingManager.statusCancelled',
+            checked_in: 'bookingManager.statusCheckedIn',
+            checked_out: 'bookingManager.statusCheckedOut'
+        };
+        return map[status] ? t(map[status]) : status;
+    };
+
     if (loading) {
         return <div className="spinner"></div>;
     }
 
     return (
         <div>
-            <h2 style={{ marginBottom: '2rem' }}>Booking Management</h2>
+            <h2 style={{ marginBottom: '2rem' }}>{t('bookingManager.title')}</h2>
 
             <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
                 <button
                     className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setFilter('all')}
                 >
-                    All ({bookings.length})
+                    {t('bookingManager.filterAll')} ({bookings.length})
                 </button>
                 <button
                     className={`btn ${filter === 'pending' ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setFilter('pending')}
                 >
-                    Pending ({bookings.filter(b => b.status === 'pending').length})
+                    {t('bookingManager.filterPending')} ({bookings.filter(b => b.status === 'pending').length})
                 </button>
                 <button
                     className={`btn ${filter === 'confirmed' ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setFilter('confirmed')}
                 >
-                    Confirmed ({bookings.filter(b => b.status === 'confirmed').length})
+                    {t('bookingManager.filterConfirmed')} ({bookings.filter(b => b.status === 'confirmed').length})
                 </button>
                 <button
                     className={`btn ${filter === 'cancelled' ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setFilter('cancelled')}
                 >
-                    Cancelled ({bookings.filter(b => b.status === 'cancelled').length})
+                    {t('bookingManager.filterCancelled')} ({bookings.filter(b => b.status === 'cancelled').length})
                 </button>
             </div>
 
             {filteredBookings.length === 0 ? (
                 <div className="glass-card text-center">
-                    <p>No bookings found.</p>
+                    <p>{t('bookingManager.noBookings')}</p>
                 </div>
             ) : (
                 <div className="glass-card" style={{ overflowX: 'auto' }}>
                     <table className="table" style={{ minWidth: '600px' }}>
                         <thead>
                             <tr>
-                                <th>Guest Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Check-in</th>
-                                <th>Check-out</th>
-                                <th>Room Type</th>
-                                <th>Guests</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>{t('bookingManager.colName')}</th>
+                                <th>{t('bookingManager.colEmail')}</th>
+                                <th>{t('bookingManager.colPhone')}</th>
+                                <th>{t('bookingManager.colCheckIn')}</th>
+                                <th>{t('bookingManager.colCheckOut')}</th>
+                                <th>{t('bookingManager.colRoomType')}</th>
+                                <th>{t('bookingManager.colGuests')}</th>
+                                <th>{t('bookingManager.colTotal')}</th>
+                                <th>{t('bookingManager.colStatus')}</th>
+                                <th>{t('bookingManager.colActions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,12 +139,12 @@ export default function BookingManager() {
                                 <tr key={booking.id}>
                                     <td>{booking.guest_name}</td>
                                     <td>{booking.guest_email}</td>
-                                    <td>{booking.guest_phone || 'N/A'}</td>
-                                    <td>{new Date(booking.check_in).toLocaleDateString()}</td>
-                                    <td>{new Date(booking.check_out).toLocaleDateString()}</td>
-                                    <td>{booking.room_prices?.room_type || 'N/A'}</td>
+                                    <td>{booking.guest_phone || t('common.na')}</td>
+                                    <td>{new Date(booking.check_in).toLocaleDateString(language)}</td>
+                                    <td>{new Date(booking.check_out).toLocaleDateString(language)}</td>
+                                    <td>{booking.room_prices?.room_type || t('common.na')}</td>
                                     <td>{booking.number_of_guests}</td>
-                                    <td>${booking.total_amount?.toFixed(2)}</td>
+                                    <td>{formatPrice(booking.total_amount)}</td>
                                     <td>
                                         <span style={{
                                             padding: '0.25rem 0.75rem',
@@ -141,7 +155,7 @@ export default function BookingManager() {
                                                     booking.status === 'cancelled' ? 'var(--error)' :
                                                         'var(--warning)'
                                         }}>
-                                            {booking.status}
+                                            {translateStatus(booking.status)}
                                         </span>
                                     </td>
                                     <td>
@@ -152,7 +166,7 @@ export default function BookingManager() {
                                                     style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
                                                     onClick={() => updateBookingStatus(booking.id, 'confirmed')}
                                                 >
-                                                    Confirm
+                                                    {t('bookingManager.actConfirm')}
                                                 </button>
                                             )}
                                             {booking.status !== 'cancelled' ? (
@@ -161,16 +175,16 @@ export default function BookingManager() {
                                                     style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
                                                     onClick={() => updateBookingStatus(booking.id, 'cancelled')}
                                                 >
-                                                    Cancel
+                                                    {t('bookingManager.actCancel')}
                                                 </button>
                                             ) : (
                                                 <button
                                                     className="btn btn-primary"
                                                     style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', background: 'var(--accent-teal)' }}
-                                                    title="Reactivate Booking"
+                                                    title={t('bookingManager.actReconsider')}
                                                     onClick={() => updateBookingStatus(booking.id, 'pending')}
                                                 >
-                                                    Reconsider
+                                                    {t('bookingManager.actReconsider')}
                                                 </button>
                                             )}
                                             <button
@@ -178,7 +192,7 @@ export default function BookingManager() {
                                                 style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
                                                 onClick={() => deleteBooking(booking.id)}
                                             >
-                                                Delete
+                                                {t('bookingManager.actDelete')}
                                             </button>
                                         </div>
                                     </td>

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function SettingsManager() {
+    const { t } = useGlobal();
     const [settings, setSettings] = useState({
         hostel_name: '',
         hero_description: '',
@@ -49,7 +51,6 @@ export default function SettingsManager() {
         setMessage({ type: '', text: '' });
 
         try {
-            // Update each setting
             for (const [key, value] of Object.entries(settings)) {
                 const { error } = await supabase
                     .from('site_settings')
@@ -58,9 +59,9 @@ export default function SettingsManager() {
                 if (error) throw error;
             }
 
-            setMessage({ type: 'success', text: 'Settings saved successfully!' });
+            setMessage({ type: 'success', text: t('settingsManager.success') });
         } catch (error) {
-            setMessage({ type: 'error', text: 'Error saving settings: ' + error.message });
+            setMessage({ type: 'error', text: t('settingsManager.errorSave') + error.message });
         } finally {
             setSaving(false);
         }
@@ -72,36 +73,36 @@ export default function SettingsManager() {
 
     return (
         <div>
-            <h2 style={{ marginBottom: '2rem' }}>Site Settings</h2>
+            <h2 style={{ marginBottom: '2rem' }}>{t('settingsManager.title')}</h2>
 
             <div className="glass-card" style={{ maxWidth: '800px' }}>
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
-                        <label className="input-label">Hostel Name</label>
+                        <label className="input-label">{t('settingsManager.lblHostelName')}</label>
                         <input
                             type="text"
                             name="hostel_name"
                             className="input-field"
                             value={settings.hostel_name}
                             onChange={handleInputChange}
-                            placeholder="Paradise Hostel"
+                            placeholder={t('settingsManager.phHostelName')}
                         />
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Hero Description</label>
+                        <label className="input-label">{t('settingsManager.lblHeroDescription')}</label>
                         <textarea
                             name="hero_description"
                             className="input-field"
                             value={settings.hero_description}
                             onChange={handleInputChange}
                             rows="3"
-                            placeholder="Your home away from home..."
+                            placeholder={t('settingsManager.phHeroDescription')}
                         />
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Hero Image URL</label>
+                        <label className="input-label">{t('settingsManager.lblHeroImageUrl')}</label>
                         <input
                             type="url"
                             name="hero_image"
@@ -138,7 +139,7 @@ export default function SettingsManager() {
                         style={{ width: '100%' }}
                         disabled={saving}
                     >
-                        {saving ? 'Saving...' : 'Save Settings'}
+                        {saving ? t('settingsManager.saving') : t('settingsManager.save')}
                     </button>
                 </form>
             </div>

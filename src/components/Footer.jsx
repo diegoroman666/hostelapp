@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function Footer() {
+    const { t } = useGlobal();
     const currentYear = new Date().getFullYear();
 
     return (
@@ -28,7 +30,7 @@ export default function Footer() {
                             fontSize: '0.9rem',
                             lineHeight: '1.6'
                         }}>
-                            Where the stars align for unforgettable journeys. Experience cosmic comfort in the heart of the city.
+                            {t('footer.aboutText')}
                         </p>
                     </div>
 
@@ -39,7 +41,7 @@ export default function Footer() {
                             marginBottom: '1rem',
                             fontSize: '1.1rem'
                         }}>
-                            Quick Links
+                            {t('footer.quickLinks')}
                         </h4>
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                             <li style={{ marginBottom: '0.5rem' }}>
@@ -49,7 +51,7 @@ export default function Footer() {
                                     fontSize: '0.9rem',
                                     transition: 'var(--transition)'
                                 }} className="footer-link">
-                                    Home
+                                    {t('nav.home')}
                                 </Link>
                             </li>
                             <li style={{ marginBottom: '0.5rem' }}>
@@ -58,7 +60,7 @@ export default function Footer() {
                                     textDecoration: 'none',
                                     fontSize: '0.9rem'
                                 }} className="footer-link">
-                                    Book Now
+                                    {t('nav.book')}
                                 </Link>
                             </li>
                             <li style={{ marginBottom: '0.5rem' }}>
@@ -67,7 +69,7 @@ export default function Footer() {
                                     textDecoration: 'none',
                                     fontSize: '0.9rem'
                                 }} className="footer-link">
-                                    Amenities
+                                    {t('amenities.title')}
                                 </a>
                             </li>
                             <li style={{ marginBottom: '0.5rem' }}>
@@ -76,7 +78,7 @@ export default function Footer() {
                                     textDecoration: 'none',
                                     fontSize: '0.9rem'
                                 }} className="footer-link">
-                                    Manager Login
+                                    {t('nav.login')}
                                 </Link>
                             </li>
                         </ul>
@@ -89,7 +91,7 @@ export default function Footer() {
                             marginBottom: '1rem',
                             fontSize: '1.1rem'
                         }}>
-                            Contact
+                            {t('footer.contactHeader')}
                         </h4>
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                             <li style={{
@@ -97,7 +99,7 @@ export default function Footer() {
                                 marginBottom: '0.5rem',
                                 fontSize: '0.9rem'
                             }}>
-                                📍 123 Constellation Ave
+                                📍 {t('contact.address1')}
                             </li>
                             <li style={{
                                 color: 'var(--text-secondary)',
@@ -130,7 +132,7 @@ export default function Footer() {
                             marginBottom: '1rem',
                             fontSize: '1.1rem'
                         }}>
-                            Follow Us
+                            {t('footer.followUs')}
                         </h4>
                         <div style={{
                             display: 'flex',
@@ -156,14 +158,14 @@ export default function Footer() {
                             fontSize: '0.9rem',
                             marginBottom: '0.3rem'
                         }}>
-                            <strong>24/7 Reception</strong>
+                            <strong>{t('footer.reception247')}</strong>
                         </p>
                         <p style={{
                             color: 'var(--text-secondary)',
                             fontSize: '0.85rem'
                         }}>
-                            Check-in: 2:00 PM<br />
-                            Check-out: 11:00 AM
+                            {t('footer.checkInTime')}<br />
+                            {t('footer.checkOutTime')}
                         </p>
                     </div>
                 </div>
@@ -187,17 +189,17 @@ export default function Footer() {
                             fontSize: '0.9rem',
                             margin: 0
                         }}>
-                            © {currentYear} Scorpius Hostel. All rights reserved.
+                            © {currentYear} Scorpius Hostel. {t('footer.copyright')}
                         </p>
                         <p style={{
                             color: 'var(--text-secondary)',
                             fontSize: '0.9rem',
                             margin: 0
                         }}>
-                            Developed by <span style={{
+                            {t('footer.developedBy')} <span style={{
                                 color: 'var(--accent-gold)',
                                 fontWeight: '600'
-                            }}>INFORMATIK 2026</span>
+                            }}>Informatik-2026 IEI</span>
                         </p>
                     </div>
 
@@ -214,21 +216,21 @@ export default function Footer() {
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
-                            Privacy Policy
+                            {t('footer.privacyPolicy')}
                         </a>
                         <a href="#" style={{
                             color: 'var(--text-secondary)',
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
-                            Terms of Service
+                            {t('footer.termsOfService')}
                         </a>
                         <a href="#" style={{
                             color: 'var(--text-secondary)',
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
-                            Cancellation Policy
+                            {t('footer.cancellationPolicy')}
                         </a>
                     </div>
                 </div>

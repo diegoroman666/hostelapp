@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function RoomManager() {
+    const { t, formatPrice } = useGlobal();
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingRoom, setEditingRoom] = useState(null);
@@ -67,7 +69,7 @@ export default function RoomManager() {
             resetForm();
             setShowModal(false);
         } catch (error) {
-            alert('Error saving room: ' + error.message);
+            alert(t('roomManager.errorSave') + error.message);
         }
     };
 
@@ -85,7 +87,7 @@ export default function RoomManager() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this room type?')) return;
+        if (!confirm(t('roomManager.confirmDelete'))) return;
 
         try {
             const { error } = await supabase
@@ -96,7 +98,7 @@ export default function RoomManager() {
             if (error) throw error;
             fetchRooms();
         } catch (error) {
-            alert('Error deleting room: ' + error.message);
+            alert(t('roomManager.errorDelete') + error.message);
         }
     };
 
@@ -119,9 +121,9 @@ export default function RoomManager() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2>Room Management</h2>
+                <h2>{t('roomManager.title')}</h2>
                 <button className="btn btn-primary" onClick={() => { resetForm(); setShowModal(true); }}>
-                    + Add New Room Type
+                    {t('roomManager.addNew')}
                 </button>
             </div>
 
@@ -138,15 +140,15 @@ export default function RoomManager() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                             <div>
                                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-teal)' }}>
-                                    ${room.price_per_night}
+                                    {formatPrice(room.price_per_night)}
                                 </div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>per night</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{t('roomManager.perNight')}</div>
                             </div>
                             <div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
                                     {room.capacity}
                                 </div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>guests</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{t('roomManager.guests')}</div>
                             </div>
                         </div>
                         <div style={{ marginBottom: '1rem' }}>
@@ -156,15 +158,15 @@ export default function RoomManager() {
                                 fontSize: '0.85rem',
                                 background: room.is_active ? 'var(--success)' : 'var(--error)'
                             }}>
-                                {room.is_active ? 'Active' : 'Inactive'}
+                                {room.is_active ? t('roomManager.active') : t('roomManager.inactive')}
                             </span>
                         </div>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className="btn btn-secondary" onClick={() => handleEdit(room)} style={{ flex: 1 }}>
-                                Edit
+                                {t('roomManager.edit')}
                             </button>
                             <button className="btn btn-danger" onClick={() => handleDelete(room.id)} style={{ flex: 1 }}>
-                                Delete
+                                {t('roomManager.delete')}
                             </button>
                         </div>
                     </div>
@@ -175,12 +177,12 @@ export default function RoomManager() {
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2 style={{ marginBottom: '1.5rem' }}>
-                            {editingRoom ? 'Edit Room Type' : 'Add New Room Type'}
+                            {editingRoom ? t('roomManager.editTitle') : t('roomManager.addTitle')}
                         </h2>
 
                         <form onSubmit={handleSubmit}>
                             <div className="input-group">
-                                <label className="input-label">Room Type</label>
+                                <label className="input-label">{t('roomManager.lblRoomType')}</label>
                                 <input
                                     type="text"
                                     name="room_type"
@@ -188,12 +190,12 @@ export default function RoomManager() {
                                     value={formData.room_type}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="e.g., Shared Dorm, Private Room"
+                                    placeholder={t('roomManager.phRoomType')}
                                 />
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Description</label>
+                                <label className="input-label">{t('roomManager.lblDescription')}</label>
                                 <textarea
                                     name="description"
                                     className="input-field"
@@ -201,12 +203,12 @@ export default function RoomManager() {
                                     onChange={handleInputChange}
                                     required
                                     rows="3"
-                                    placeholder="Describe the room..."
+                                    placeholder={t('roomManager.phDescription')}
                                 />
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Price per Night ($)</label>
+                                <label className="input-label">{t('roomManager.lblPricePerNight')} (USD)</label>
                                 <input
                                     type="number"
                                     name="price_per_night"
@@ -221,7 +223,7 @@ export default function RoomManager() {
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Capacity (guests)</label>
+                                <label className="input-label">{t('roomManager.lblCapacity')}</label>
                                 <input
                                     type="number"
                                     name="capacity"
@@ -235,7 +237,7 @@ export default function RoomManager() {
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Image URL</label>
+                                <label className="input-label">{t('roomManager.lblImageUrl')}</label>
                                 <input
                                     type="url"
                                     name="image_url"
@@ -255,13 +257,13 @@ export default function RoomManager() {
                                         onChange={handleInputChange}
                                         style={{ width: 'auto' }}
                                     />
-                                    <span className="input-label" style={{ marginBottom: 0 }}>Active</span>
+                                    <span className="input-label" style={{ marginBottom: 0 }}>{t('roomManager.lblActive')}</span>
                                 </label>
                             </div>
 
                             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
                                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                                    {editingRoom ? 'Update' : 'Create'}
+                                    {editingRoom ? t('roomManager.update') : t('roomManager.create')}
                                 </button>
                                 <button
                                     type="button"
@@ -269,7 +271,7 @@ export default function RoomManager() {
                                     onClick={() => setShowModal(false)}
                                     style={{ flex: 1 }}
                                 >
-                                    Cancel
+                                    {t('roomManager.cancel')}
                                 </button>
                             </div>
                         </form>

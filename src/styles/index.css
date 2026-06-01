@@ -859,6 +859,19 @@ select.input-field {
   cursor: pointer;
 }
 
+/* Force readable contrast on dropdown options in BOTH themes.
+   Browsers don't reliably inherit color/background from <select>,
+   so we declare it explicitly to avoid white-on-white in day mode. */
+select.input-field option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+[data-theme="night"] select.input-field option {
+  background-color: #141b3d;
+  color: #ffffff;
+}
+
 /* ============================================
    SERVICE CARDS
    ============================================ */

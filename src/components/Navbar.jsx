@@ -50,7 +50,7 @@ export default function Navbar() {
                     <button
                         className="menu-toggle-btn"
                         onClick={() => setIsMenuOpen(true)}
-                        aria-label="Open menu"
+                        aria-label={t('nav.menu')}
                     >
                         <span style={{ fontSize: '1.5rem' }}>☰</span>
                     </button>
@@ -81,14 +81,14 @@ export default function Navbar() {
             {/* SIDEBAR CONTENT */}
             <aside className={`sidebar-drawer ${isMenuOpen ? 'active' : ''}`}>
                 <div className="sidebar-header">
-                    <span className="sidebar-title">{t('nav.dashboard') || 'Menu'}</span>
+                    <span className="sidebar-title">{t('nav.menu')}</span>
                     <button className="close-btn" onClick={() => setIsMenuOpen(false)}>✕</button>
                 </div>
 
                 <div className="sidebar-body">
                     {/* Navigation Links */}
                     <div className="sidebar-section">
-                        <h4 className="sidebar-heading">Navigation</h4>
+                        <h4 className="sidebar-heading">{t('nav.navigation')}</h4>
                         <nav className="sidebar-nav-links">
                             <Link to="/" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>🏠 {t('nav.home')}</Link>
                             <Link to="/booking" className="sidebar-link" onClick={() => setIsMenuOpen(false)}>📅 {t('nav.book')}</Link>
@@ -101,7 +101,7 @@ export default function Navbar() {
 
                     {/* Internationalization (I18n) */}
                     <div className="sidebar-section">
-                        <h4 className="sidebar-heading">Language 🌍</h4>
+                        <h4 className="sidebar-heading">{t('nav.language')} 🌍</h4>
                         <div className="pill-selector">
                             {['EN', 'ES', 'DE', 'FR', 'IT'].map(lang => (
                                 <button
@@ -116,7 +116,7 @@ export default function Navbar() {
                     </div>
 
                     <div className="sidebar-section">
-                        <h4 className="sidebar-heading">Currency 💰</h4>
+                        <h4 className="sidebar-heading">{t('nav.currency')} 💰</h4>
                         <div className="pill-selector">
                             {['USD', 'CLP', 'EUR'].map(curr => (
                                 <button

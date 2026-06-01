@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function ServiceManager() {
+    const { t, formatPrice } = useGlobal();
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingService, setEditingService] = useState(null);
@@ -66,7 +68,7 @@ export default function ServiceManager() {
             resetForm();
             setShowModal(false);
         } catch (error) {
-            alert('Error saving service: ' + error.message);
+            alert(t('serviceManager.errorSave') + error.message);
         }
     };
 
@@ -83,7 +85,7 @@ export default function ServiceManager() {
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this service?')) return;
+        if (!confirm(t('serviceManager.confirmDelete'))) return;
 
         try {
             const { error } = await supabase
@@ -94,7 +96,7 @@ export default function ServiceManager() {
             if (error) throw error;
             fetchServices();
         } catch (error) {
-            alert('Error deleting service: ' + error.message);
+            alert(t('serviceManager.errorDelete') + error.message);
         }
     };
 
@@ -121,9 +123,9 @@ export default function ServiceManager() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2>Service Management</h2>
+                <h2>{t('serviceManager.title')}</h2>
                 <button className="btn btn-primary" onClick={openNewServiceModal}>
-                    + Add New Service
+                    {t('serviceManager.addNew')}
                 </button>
             </div>
 
@@ -138,7 +140,7 @@ export default function ServiceManager() {
                             {service.description}
                         </p>
                         <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-teal)', marginBottom: '1rem' }}>
-                            ${service.price}
+                            {formatPrice(service.price)}
                         </div>
                         <div style={{ marginBottom: '1rem' }}>
                             <span style={{
@@ -147,15 +149,15 @@ export default function ServiceManager() {
                                 fontSize: '0.85rem',
                                 background: service.is_active ? 'var(--success)' : 'var(--error)'
                             }}>
-                                {service.is_active ? 'Active' : 'Inactive'}
+                                {service.is_active ? t('serviceManager.active') : t('serviceManager.inactive')}
                             </span>
                         </div>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className="btn btn-secondary" onClick={() => handleEdit(service)} style={{ flex: 1 }}>
-                                Edit
+                                {t('serviceManager.edit')}
                             </button>
                             <button className="btn btn-danger" onClick={() => handleDelete(service.id)} style={{ flex: 1 }}>
-                                Delete
+                                {t('serviceManager.delete')}
                             </button>
                         </div>
                     </div>
@@ -166,12 +168,12 @@ export default function ServiceManager() {
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2 style={{ marginBottom: '1.5rem' }}>
-                            {editingService ? 'Edit Service' : 'Add New Service'}
+                            {editingService ? t('serviceManager.editTitle') : t('serviceManager.addTitle')}
                         </h2>
 
                         <form onSubmit={handleSubmit}>
                             <div className="input-group">
-                                <label className="input-label">Service Name</label>
+                                <label className="input-label">{t('serviceManager.lblName')}</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -179,12 +181,12 @@ export default function ServiceManager() {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="e.g., Breakfast Included"
+                                    placeholder={t('serviceManager.phName')}
                                 />
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Description</label>
+                                <label className="input-label">{t('serviceManager.lblDescription')}</label>
                                 <textarea
                                     name="description"
                                     className="input-field"
@@ -192,12 +194,12 @@ export default function ServiceManager() {
                                     onChange={handleInputChange}
                                     required
                                     rows="3"
-                                    placeholder="Describe the service..."
+                                    placeholder={t('serviceManager.phDescription')}
                                 />
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Price ($)</label>
+                                <label className="input-label">{t('serviceManager.lblPrice')} (USD)</label>
                                 <input
                                     type="number"
                                     name="price"
@@ -212,7 +214,7 @@ export default function ServiceManager() {
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Image URL</label>
+                                <label className="input-label">{t('serviceManager.lblImageUrl')}</label>
                                 <input
                                     type="url"
                                     name="image_url"
@@ -232,13 +234,13 @@ export default function ServiceManager() {
                                         onChange={handleInputChange}
                                         style={{ width: 'auto' }}
                                     />
-                                    <span className="input-label" style={{ marginBottom: 0 }}>Active</span>
+                                    <span className="input-label" style={{ marginBottom: 0 }}>{t('serviceManager.lblActive')}</span>
                                 </label>
                             </div>
 
                             <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
                                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                                    {editingService ? 'Update' : 'Create'}
+                                    {editingService ? t('serviceManager.update') : t('serviceManager.create')}
                                 </button>
                                 <button
                                     type="button"
@@ -246,7 +248,7 @@ export default function ServiceManager() {
                                     onClick={() => setShowModal(false)}
                                     style={{ flex: 1 }}
                                 >
-                                    Cancel
+                                    {t('serviceManager.cancel')}
                                 </button>
                             </div>
                         </form>

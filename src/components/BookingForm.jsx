@@ -239,7 +239,7 @@ export default function BookingForm() {
 
                     {demoMode && (
                         <div className="toast toast-warning" style={{ position: 'relative', bottom: 'auto', right: 'auto', marginBottom: '2rem' }}>
-                            ⚠️ Demo Mode Active
+                            ⚠️ {t('booking.demoMode')}
                         </div>
                     )}
 
@@ -257,7 +257,7 @@ export default function BookingForm() {
                                     value={formData.guest_name}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="John Doe"
+                                    placeholder={t('booking.namePlaceholder')}
                                 />
                             </div>
 
@@ -270,7 +270,7 @@ export default function BookingForm() {
                                     value={formData.guest_email}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="john@example.com"
+                                    placeholder={t('booking.emailPlaceholder')}
                                 />
                             </div>
 
@@ -282,7 +282,7 @@ export default function BookingForm() {
                                     className="input-field"
                                     value={formData.guest_phone}
                                     onChange={handleInputChange}
-                                    placeholder="+1 234 567 8900"
+                                    placeholder={t('booking.phonePlaceholder')}
                                 />
                             </div>
 
@@ -323,7 +323,7 @@ export default function BookingForm() {
                                     onChange={handleInputChange}
                                     required
                                 >
-                                    <option value="">{t('hero.title')}</option>
+                                    <option value="">{t('booking.selectRoom')}</option>
                                     {roomTypes.map(room => (
                                         <option key={room.id} value={room.id}>
                                             {getRoomName(room)} - {formatPrice(room.price_per_night)}/{t('booking.night')}
@@ -358,7 +358,7 @@ export default function BookingForm() {
                                 style={{ width: '100%' }}
                                 disabled={loading}
                             >
-                                {loading ? 'Processing...' : `📋 ${t('booking.bookBtn')}`}
+                                {loading ? t('booking.processing') : `📋 ${t('booking.bookBtn')}`}
                             </button>
                         </form>
                     </div>
