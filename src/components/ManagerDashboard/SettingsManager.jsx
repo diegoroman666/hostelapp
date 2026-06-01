@@ -1,34 +1,39 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { useGlobal } from '../../context/GlobalContext';
+
+const LANGUAGES = [
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'es', label: 'Español', flag: '🇪🇸' },
+    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'fr', label: 'Français', flag: '🇫🇷' },
+    { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+];
+
+const CURRENCIES = [
+    { code: 'USD', label: '$ USD' },
+    { code: 'CLP', label: '$ CLP' },
+    { code: 'EUR', label: '€ EUR' },
+];
 
 export default function SettingsManager() {
-    const [settings, setSettings] = useState({
-        hostel_name: '',
-        hero_description: '',
-        hero_image: ''
-    });
+    const { language, setLanguage, currency, setCurrency, t } = useGlobal();
+
+    const [settings, setSettings] = useState({ hostel_name: '', hero_description: '', hero_image: '' });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
-    useEffect(() => {
-        fetchSettings();
-    }, []);
+    useEffect(() => { fetchSettings(); }, []);
 
     const fetchSettings = async () => {
         try {
-            const { data, error } = await supabase
-                .from('site_settings')
-                .select('key, value');
-
+            const { data, error } = await supabase.from('site_settings').select('key, value');
             if (error) throw error;
-
             if (data) {
                 const settingsObj = {};
-                data.forEach(item => {
-                    settingsObj[item.key] = item.value;
-                });
+                data.forEach(item => { settingsObj[item.key] = item.value; });
                 setSettings(prev => ({ ...prev, ...settingsObj }));
             }
         } catch (error) {
@@ -47,37 +52,73 @@ export default function SettingsManager() {
         e.preventDefault();
         setSaving(true);
         setMessage({ type: '', text: '' });
-
         try {
-            // Update each setting
             for (const [key, value] of Object.entries(settings)) {
-                const { error } = await supabase
-                    .from('site_settings')
-                    .upsert({ key, value }, { onConflict: 'key' });
-
+                const { error } = await supabase.from('site_settings').upsert({ key, value }, { onConflict: 'key' });
                 if (error) throw error;
             }
-
-            setMessage({ type: 'success', text: 'Settings saved successfully!' });
+            setMessage({ type: 'success', text: t('admin.settings.saved') });
         } catch (error) {
-            setMessage({ type: 'error', text: 'Error saving settings: ' + error.message });
+            setMessage({ type: 'error', text: t('admin.settings.saveError') + error.message });
         } finally {
             setSaving(false);
         }
     };
 
-    if (loading) {
-        return <div className="spinner"></div>;
-    }
+    if (loading) return <div className="spinner"></div>;
 
     return (
         <div>
-            <h2 style={{ marginBottom: '2rem' }}>Site Settings</h2>
+            <h2 style={{ marginBottom: '2rem' }}>{t('admin.settings.title')}</h2>
 
+            {/* Language & Currency */}
+            <div className="glass-card" style={{ maxWidth: '800px', marginBottom: '2rem' }}>
+                <h3 style={{ marginBottom: '1.5rem', color: 'var(--accent-gold)' }}>
+                    🌍 {t('admin.settings.langCurrency')}
+                </h3>
+
+                <div className="input-group">
+                    <label className="input-label">{t('admin.settings.siteLanguage')}</label>
+                    <div className="pill-selector" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
+                        {LANGUAGES.map(lang => (
+                            <button
+                                key={lang.code}
+                                type="button"
+                                className={`pill-btn ${language === lang.code ? 'active' : ''}`}
+                                onClick={() => setLanguage(lang.code)}
+                                style={{ fontSize: '0.95rem' }}
+                            >
+                                {lang.flag} {lang.label}
+                            </button>
+                        ))}
+                    </div>
+                    <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                        {t('admin.settings.langNote')}
+                    </p>
+                </div>
+
+                <div className="input-group" style={{ marginBottom: 0 }}>
+                    <label className="input-label">{t('admin.settings.currency')}</label>
+                    <div className="pill-selector">
+                        {CURRENCIES.map(curr => (
+                            <button
+                                key={curr.code}
+                                type="button"
+                                className={`pill-btn ${currency === curr.code ? 'active' : ''}`}
+                                onClick={() => setCurrency(curr.code)}
+                            >
+                                {curr.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Hostel Settings Form */}
             <div className="glass-card" style={{ maxWidth: '800px' }}>
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
-                        <label className="input-label">Hostel Name</label>
+                        <label className="input-label">{t('admin.settings.hostelName')}</label>
                         <input
                             type="text"
                             name="hostel_name"
@@ -89,7 +130,7 @@ export default function SettingsManager() {
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Hero Description</label>
+                        <label className="input-label">{t('admin.settings.heroDescription')}</label>
                         <textarea
                             name="hero_description"
                             className="input-field"
@@ -101,7 +142,7 @@ export default function SettingsManager() {
                     </div>
 
                     <div className="input-group">
-                        <label className="input-label">Hero Image URL</label>
+                        <label className="input-label">{t('admin.settings.heroImageUrl')}</label>
                         <input
                             type="url"
                             name="hero_image"
@@ -115,12 +156,7 @@ export default function SettingsManager() {
                                 <img
                                     src={settings.hero_image}
                                     alt="Hero preview"
-                                    style={{
-                                        width: '100%',
-                                        maxHeight: '300px',
-                                        objectFit: 'cover',
-                                        borderRadius: 'var(--radius-md)'
-                                    }}
+                                    style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: 'var(--radius-md)' }}
                                 />
                             </div>
                         )}
@@ -132,13 +168,8 @@ export default function SettingsManager() {
                         </div>
                     )}
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        style={{ width: '100%' }}
-                        disabled={saving}
-                    >
-                        {saving ? 'Saving...' : 'Save Settings'}
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={saving}>
+                        {saving ? t('admin.settings.saving') : t('admin.settings.save')}
                     </button>
                 </form>
             </div>

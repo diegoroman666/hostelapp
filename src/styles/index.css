@@ -859,6 +859,16 @@ select.input-field {
   cursor: pointer;
 }
 
+select.input-field option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+[data-theme="day"] select.input-field option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
 /* ============================================
    SERVICE CARDS
    ============================================ */

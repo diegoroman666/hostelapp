@@ -6,25 +6,37 @@ const GlobalContext = createContext();
 export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children }) => {
-    const [language, setLanguage] = useState('en');
-    const [currency, setCurrency] = useState('USD');
+    const [language, setLanguageState] = useState(
+        () => localStorage.getItem('site_language') || 'en'
+    );
+    const [currency, setCurrencyState] = useState(
+        () => localStorage.getItem('site_currency') || 'USD'
+    );
 
-    // Helper to get nested translation
+    const setLanguage = (lang) => {
+        localStorage.setItem('site_language', lang);
+        setLanguageState(lang);
+    };
+
+    const setCurrency = (curr) => {
+        localStorage.setItem('site_currency', curr);
+        setCurrencyState(curr);
+    };
+
     const t = (path) => {
         const keys = path.split('.');
-        let current = translations[language];
+        let current = translations[language] || translations['en'];
         for (let key of keys) {
+            if (current == null || typeof current !== 'object') return path;
             if (current[key] === undefined) return path;
             current = current[key];
         }
-        return current;
+        return (typeof current === 'string' || Array.isArray(current)) ? current : path;
     };
 
-    // Helper to format currency
     const formatPrice = (amountInUSD) => {
-        const rate = currencyRates[currency];
+        const rate = currencyRates[currency] || 1;
         const converted = amountInUSD * rate;
-
         return new Intl.NumberFormat(language, {
             style: 'currency',
             currency: currency,
