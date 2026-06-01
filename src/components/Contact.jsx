@@ -8,40 +8,46 @@ export default function Contact() {
         <section className="section" style={{ background: 'var(--bg-secondary)' }}>
             <div className="container">
                 <h2 className="section-title">{t('contact.title')}</h2>
-                <p className="section-subtitle">{t('contact.subtitle')}</p>
+                <p className="section-subtitle">
+                    {t('contact.subtitle')}
+                </p>
 
                 <div className="grid grid-3" style={{ marginTop: '3rem' }}>
+                    {/* Location */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📍</div>
                         <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.location')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            123 Constellation Avenue<br />
-                            Downtown District<br />
-                            City Center, 12345
+                            {t('contact.address1')}<br />
+                            {t('contact.address2')}<br />
+                            {t('contact.address3')}
                         </p>
                     </div>
 
+                    {/* Contact */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📞</div>
-                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.contactLabel')}</h3>
+                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.contactCard')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            +1 (555) 123-4567<br />
-                            info@scorpius.com<br />
-                            WhatsApp: +1 (555) 987-6543
+                            {t('contact.phoneLine')}<br />
+                            {t('contact.emailLine')}<br />
+                            {t('contact.whatsappLine')}
                         </p>
                     </div>
 
+                    {/* Hours */}
                     <div className="glass-card text-center">
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🕐</div>
-                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.hours')}</h3>
+                        <h3 className="text-gold" style={{ marginBottom: '1rem' }}>{t('contact.hoursCard')}</h3>
                         <p style={{ color: 'var(--text-secondary)' }}>
-                            {t('contact.reception')}<br />
-                            {t('contact.checkin')}<br />
-                            {t('contact.checkout')}
+                            {t('contact.reception247')}<br />
+                            {t('contact.checkInTime')}<br />
+                            {t('contact.checkOutTime')}
                         </p>
                     </div>
                 </div>
 
+                {/* Map Placeholder */}
                 <div className="glass-card" style={{ marginTop: '3rem', padding: '0', overflow: 'hidden' }}>
                     <div style={{
                         width: '100%',
@@ -55,7 +61,9 @@ export default function Contact() {
                         <div style={{ textAlign: 'center' }}>
                             <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🗺️</div>
                             <p>{t('contact.mapPlaceholder')}</p>
-                            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>({t('contact.mapNote')})</p>
+                            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                                {t('contact.mapNote')}
+                            </p>
                         </div>
                     </div>
                 </div>

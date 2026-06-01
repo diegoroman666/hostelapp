@@ -1,4 +1,5 @@
 import React from 'react';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function PriceCalculator({
     checkIn,
@@ -8,6 +9,8 @@ export default function PriceCalculator({
     services,
     serviceQuantities
 }) {
+    const { t, formatPrice } = useGlobal();
+
     const calculateNights = () => {
         if (!checkIn || !checkOut) return 0;
         const start = new Date(checkIn);
@@ -31,12 +34,12 @@ export default function PriceCalculator({
 
     return (
         <div className="price-summary">
-            <h3 style={{ color: 'white', marginBottom: '1rem' }}>Price Summary</h3>
+            <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1rem' }}>{t('booking.breakdown')}</h3>
 
             {roomType && (
                 <div className="price-row">
-                    <span>{roomType} × {nights} night{nights !== 1 ? 's' : ''}</span>
-                    <span>${roomTotal.toFixed(2)}</span>
+                    <span>{roomType} × {nights} {nights !== 1 ? t('booking.nights') : t('booking.night')}</span>
+                    <span>{formatPrice(roomTotal)}</span>
                 </div>
             )}
 
@@ -46,14 +49,14 @@ export default function PriceCalculator({
                 return (
                     <div key={service.id} className="price-row">
                         <span>{service.name} × {quantity}</span>
-                        <span>${(service.price * quantity).toFixed(2)}</span>
+                        <span>{formatPrice(service.price * quantity)}</span>
                     </div>
                 );
             })}
 
             <div className="price-row price-total">
-                <span>Total</span>
-                <span>${grandTotal.toFixed(2)}</span>
+                <span>{t('booking.total')}</span>
+                <span>{formatPrice(grandTotal)}</span>
             </div>
         </div>
     );

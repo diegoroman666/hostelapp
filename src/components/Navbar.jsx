@@ -50,7 +50,7 @@ export default function Navbar() {
                     <button
                         className="menu-toggle-btn"
                         onClick={() => setIsMenuOpen(true)}
-                        aria-label="Open menu"
+                        aria-label={t('nav.menu')}
                     >
                         <span style={{ fontSize: '1.5rem' }}>☰</span>
                     </button>
@@ -81,7 +81,7 @@ export default function Navbar() {
             {/* SIDEBAR CONTENT */}
             <aside className={`sidebar-drawer ${isMenuOpen ? 'active' : ''}`}>
                 <div className="sidebar-header">
-                    <span className="sidebar-title">{t('nav.dashboard') || 'Menu'}</span>
+                    <span className="sidebar-title">{t('nav.menu')}</span>
                     <button className="close-btn" onClick={() => setIsMenuOpen(false)}>✕</button>
                 </div>
 

@@ -2,8 +2,10 @@ import React from 'react';
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { useGlobal } from '../context/GlobalContext';
 
 export default function Login() {
+    const { t } = useGlobal();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ export default function Login() {
 
             if (managerError || !managerData) {
                 await supabase.auth.signOut();
-                throw new Error('Unauthorized: You are not a manager');
+                throw new Error(t('login.unauthorized'));
             }
 
             navigate('/dashboard');
@@ -48,11 +50,11 @@ export default function Login() {
             <div className="container">
                 <div style={{ maxWidth: '500px', margin: '0 auto' }}>
                     <div className="glass-card">
-                        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Manager Login</h2>
+                        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>{t('login.title')}</h2>
 
                         <form onSubmit={handleLogin}>
                             <div className="input-group">
-                                <label className="input-label">Email</label>
+                                <label className="input-label">{t('login.emailLabel')}</label>
                                 <input
                                     type="email"
                                     className="input-field"
@@ -64,7 +66,7 @@ export default function Login() {
                             </div>
 
                             <div className="input-group">
-                                <label className="input-label">Password</label>
+                                <label className="input-label">{t('login.passwordLabel')}</label>
                                 <input
                                     type="password"
                                     className="input-field"
@@ -87,7 +89,7 @@ export default function Login() {
                                 style={{ width: '100%' }}
                                 disabled={loading}
                             >
-                                {loading ? 'Logging in...' : 'Login'}
+                                {loading ? t('login.loggingIn') : t('login.submitBtn')}
                             </button>
                         </form>
 

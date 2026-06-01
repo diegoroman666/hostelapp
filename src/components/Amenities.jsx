@@ -71,7 +71,9 @@ export default function Amenities() {
         <section className="section">
             <div className="container">
                 <h2 className="section-title">{t('amenities.title')}</h2>
-                <p className="section-subtitle">{t('amenities.subtitle')}</p>
+                <p className="section-subtitle">
+                    {t('amenities.subtitle')}
+                </p>
 
                 <div className="amenities-grid">
                     {amenities.map((amenity, index) => (
