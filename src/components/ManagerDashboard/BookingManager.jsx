@@ -66,18 +66,6 @@ export default function BookingManager() {
         ? bookings
         : bookings.filter(b => b.status === filter);
 
-    // Translate the raw status from DB ("pending", "confirmed", …) for display
-    const translateStatus = (status) => {
-        const map = {
-            pending: 'bookingManager.statusPending',
-            confirmed: 'bookingManager.statusConfirmed',
-            cancelled: 'bookingManager.statusCancelled',
-            checked_in: 'bookingManager.statusCheckedIn',
-            checked_out: 'bookingManager.statusCheckedOut'
-        };
-        return map[status] ? t(map[status]) : status;
-    };
-
     if (loading) {
         return <div className="spinner"></div>;
     }
@@ -119,7 +107,29 @@ export default function BookingManager() {
                 </div>
             ) : (
                 <div className="glass-card" style={{ overflowX: 'auto' }}>
-                    <table className="table" style={{ minWidth: '600px' }}>
+                    <style>{`
+                        .booking-table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 0.8rem; }
+                        .booking-table th, .booking-table td {
+                            border: 1px solid rgba(255,255,255,0.15);
+                            padding: 0.45rem 0.5rem;
+                            text-align: left;
+                            white-space: nowrap;
+                        }
+                        .booking-table th {
+                            background: rgba(255,255,255,0.05);
+                            font-weight: 600;
+                        }
+                        .booking-select {
+                            padding: 0.2rem 0.4rem;
+                            border-radius: var(--radius-full);
+                            font-size: 0.78rem;
+                            border: none;
+                            cursor: pointer;
+                            color: #fff;
+                            outline: none;
+                        }
+                    `}</style>
+                    <table className="booking-table">
                         <thead>
                             <tr>
                                 <th>{t('bookingManager.colName')}</th>
@@ -146,55 +156,51 @@ export default function BookingManager() {
                                     <td>{booking.number_of_guests}</td>
                                     <td>{formatPrice(booking.total_amount)}</td>
                                     <td>
-                                        <span style={{
-                                            padding: '0.25rem 0.75rem',
-                                            borderRadius: 'var(--radius-full)',
-                                            fontSize: '0.85rem',
-                                            background:
-                                                booking.status === 'confirmed' ? 'var(--success)' :
-                                                    booking.status === 'cancelled' ? 'var(--error)' :
-                                                        'var(--warning)'
-                                        }}>
-                                            {translateStatus(booking.status)}
-                                        </span>
+                                        <select
+                                            className="booking-select"
+                                            value={booking.status}
+                                            onChange={(e) => updateBookingStatus(booking.id, e.target.value)}
+                                            style={{
+                                                background:
+                                                    booking.status === 'confirmed' ? 'var(--success)' :
+                                                        booking.status === 'cancelled' ? 'var(--error)' :
+                                                            'var(--warning)'
+                                            }}
+                                        >
+                                            <option value="pending">{t('bookingManager.statusPending')}</option>
+                                            <option value="confirmed">{t('bookingManager.statusConfirmed')}</option>
+                                            <option value="cancelled">{t('bookingManager.statusCancelled')}</option>
+                                            <option value="checked_in">{t('bookingManager.statusCheckedIn')}</option>
+                                            <option value="checked_out">{t('bookingManager.statusCheckedOut')}</option>
+                                        </select>
                                     </td>
                                     <td>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <select
+                                            className="booking-select"
+                                            defaultValue=""
+                                            onChange={(e) => {
+                                                const v = e.target.value;
+                                                if (!v) return;
+                                                if (v === 'confirm') updateBookingStatus(booking.id, 'confirmed');
+                                                else if (v === 'cancel') updateBookingStatus(booking.id, 'cancelled');
+                                                else if (v === 'reconsider') updateBookingStatus(booking.id, 'pending');
+                                                else if (v === 'delete') deleteBooking(booking.id);
+                                                e.target.selectedIndex = 0;
+                                            }}
+                                            style={{ background: 'var(--accent-gradient, #6b21a8)' }}
+                                        >
+                                            <option value="">⋮</option>
                                             {booking.status === 'pending' && (
-                                                <button
-                                                    className="btn btn-secondary"
-                                                    style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-                                                    onClick={() => updateBookingStatus(booking.id, 'confirmed')}
-                                                >
-                                                    {t('bookingManager.actConfirm')}
-                                                </button>
+                                                <option value="confirm">{t('bookingManager.actConfirm')}</option>
                                             )}
-                                            {booking.status !== 'cancelled' ? (
-                                                <button
-                                                    className="btn btn-danger"
-                                                    style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-                                                    onClick={() => updateBookingStatus(booking.id, 'cancelled')}
-                                                >
-                                                    {t('bookingManager.actCancel')}
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    className="btn btn-primary"
-                                                    style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', background: 'var(--accent-teal)' }}
-                                                    title={t('bookingManager.actReconsider')}
-                                                    onClick={() => updateBookingStatus(booking.id, 'pending')}
-                                                >
-                                                    {t('bookingManager.actReconsider')}
-                                                </button>
+                                            {['pending', 'confirmed'].includes(booking.status) && (
+                                                <option value="cancel">{t('bookingManager.actCancel')}</option>
                                             )}
-                                            <button
-                                                className="btn btn-danger"
-                                                style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-                                                onClick={() => deleteBooking(booking.id)}
-                                            >
-                                                {t('bookingManager.actDelete')}
-                                            </button>
-                                        </div>
+                                            {booking.status === 'cancelled' && (
+                                                <option value="reconsider">{t('bookingManager.actReconsider')}</option>
+                                            )}
+                                            <option value="delete">{t('bookingManager.actDelete')} 🗑️</option>
+                                        </select>
                                     </td>
                                 </tr>
                             ))}
