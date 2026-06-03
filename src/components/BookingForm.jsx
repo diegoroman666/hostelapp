@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import ServiceCard from './ServiceCard';
 import { useGlobal } from '../context/GlobalContext';
-import { jsPDF } from 'jspdf';
 
 // Enhanced demo data
 const DEMO_ROOMS = [
@@ -234,7 +233,8 @@ export default function BookingForm() {
         return translated && translated !== `servicesList.${name}` ? translated : name;
     };
 
-    const handleDownloadVoucher = () => {
+    const handleDownloadVoucher = async () => {
+        const { jsPDF } = await import('jspdf');
         const doc = new jsPDF({ unit: 'mm', format: 'a4' });
         const pageW = 210;
         const margin = 20;
