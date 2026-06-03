@@ -116,6 +116,11 @@ export default function ServiceManager() {
         setShowModal(true);
     };
 
+    const getServiceTranslation = (name) => {
+        const translated = t(`servicesList.${name}`);
+        return translated && translated !== `servicesList.${name}` ? translated : name;
+    };
+
     if (loading) {
         return <div className="spinner"></div>;
     }
@@ -135,7 +140,7 @@ export default function ServiceManager() {
                         {service.image_url && (
                             <img src={service.image_url} alt={service.name} className="service-image" />
                         )}
-                        <h3>{service.name}</h3>
+                        <h3>{getServiceTranslation(service.name)}</h3>
                         <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
                             {service.description}
                         </p>

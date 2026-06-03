@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import ServiceCard from './ServiceCard';
 import { useGlobal } from '../context/GlobalContext';
+import { jsPDF } from 'jspdf';
 
 // Enhanced demo data
 const DEMO_ROOMS = [
@@ -119,7 +120,9 @@ export default function BookingForm() {
     };
 
     const getSelectedServices = () => {
-        return services.filter(service => serviceQuantities[service.id] > 0);
+        return services
+            .filter(service => serviceQuantities[service.id] > 0)
+            .map(service => ({ ...service, quantity: serviceQuantities[service.id] }));
     };
 
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -226,8 +229,177 @@ export default function BookingForm() {
         return translated && translated !== `rooms.${key}` ? translated : room.room_type;
     };
 
-    const handlePrintVoucher = () => {
-        window.print();
+    const getServiceTranslation = (name) => {
+        const translated = t(`servicesList.${name}`);
+        return translated && translated !== `servicesList.${name}` ? translated : name;
+    };
+
+    const handleDownloadVoucher = () => {
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        const pageW = 210;
+        const margin = 20;
+        const contentW = pageW - 2 * margin;
+        let y = 22;
+
+        // Header
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(26);
+        doc.setTextColor(139, 21, 56);
+        doc.text(t('brand'), pageW / 2, y, { align: 'center' });
+        y += 8;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(120, 120, 120);
+        doc.text(t('hero.subtitle'), pageW / 2, y, { align: 'center' });
+        y += 6;
+
+        doc.setDrawColor(139, 21, 56);
+        doc.setLineWidth(0.8);
+        doc.line(margin, y, pageW - margin, y);
+        y += 10;
+
+        // Voucher title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(15);
+        doc.setTextColor(30, 30, 30);
+        doc.text(t('booking.voucherTitle').toUpperCase(), pageW / 2, y, { align: 'center' });
+        y += 6;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(120, 120, 120);
+        const voucherCode = bookingDetails.id?.toString().slice(-6).toUpperCase() || 'RESERVA';
+        doc.text(`${t('booking.voucherId')}: #${voucherCode}`, pageW / 2, y, { align: 'center' });
+        y += 12;
+
+        // Guest info - 2 columns
+        const colW = (contentW - 5) / 2;
+        const boxes = [
+            { label: t('booking.name'), value: bookingDetails.guest_name },
+            { label: t('booking.email'), value: bookingDetails.guest_email },
+            { label: t('booking.checkin'), value: new Date(bookingDetails.check_in).toLocaleDateString(language) },
+            { label: t('booking.checkout'), value: new Date(bookingDetails.check_out).toLocaleDateString(language) },
+        ];
+
+        for (let i = 0; i < boxes.length; i += 2) {
+            const x1 = margin;
+            const x2 = margin + colW + 5;
+            doc.setDrawColor(210, 210, 210);
+            doc.setLineWidth(0.3);
+            doc.rect(x1, y, colW, 18);
+            doc.rect(x2, y, colW, 18);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(160, 160, 160);
+            doc.text(boxes[i].label.toUpperCase(), x1 + 3, y + 5);
+            if (boxes[i + 1]) doc.text(boxes[i + 1].label.toUpperCase(), x2 + 3, y + 5);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.setTextColor(30, 30, 30);
+            const val1 = doc.splitTextToSize(boxes[i].value || '', colW - 6);
+            doc.text(val1[0], x1 + 3, y + 13);
+            if (boxes[i + 1]) {
+                const val2 = doc.splitTextToSize(boxes[i + 1].value || '', colW - 6);
+                doc.text(val2[0], x2 + 3, y + 13);
+            }
+            y += 22;
+        }
+
+        // Room type
+        doc.setDrawColor(210, 210, 210);
+        doc.setLineWidth(0.3);
+        doc.rect(margin, y, contentW, 18);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(160, 160, 160);
+        doc.text(t('booking.roomTypeLabel').toUpperCase(), margin + 3, y + 5);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(139, 21, 56);
+        doc.text(bookingDetails.room_type || '', margin + 3, y + 13);
+        y += 22;
+
+        // Services section
+        if (bookingDetails.services && bookingDetails.services.length > 0) {
+            y += 4;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(30, 30, 30);
+            doc.text(t('booking.services'), margin, y);
+            y += 6;
+
+            bookingDetails.services.forEach(service => {
+                const qty = service.quantity || 1;
+                const name = getServiceTranslation(service.name);
+                const lineTotal = formatPrice(service.price * qty);
+
+                doc.setDrawColor(230, 230, 230);
+                doc.setLineWidth(0.2);
+                doc.rect(margin, y, contentW, 12);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.setTextColor(40, 40, 40);
+                doc.text(`${name}${qty > 1 ? ` × ${qty}` : ''}`, margin + 3, y + 8);
+                doc.text(lineTotal, pageW - margin - 3, y + 8, { align: 'right' });
+                y += 14;
+            });
+        }
+
+        // Price breakdown
+        y += 5;
+        doc.setDrawColor(210, 210, 210);
+        doc.setLineWidth(0.3);
+        doc.line(margin, y, pageW - margin, y);
+        y += 8;
+
+        const roomTotal = (bookingDetails.nights || 0) * (bookingDetails.price_per_night || 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text(t('booking.roomSubtotal'), margin, y);
+        doc.text(`${bookingDetails.nights} ${t('booking.nights')} × ${formatPrice(bookingDetails.price_per_night)}`, pageW / 2, y, { align: 'center' });
+        doc.text(formatPrice(roomTotal), pageW - margin, y, { align: 'right' });
+        y += 8;
+
+        if (bookingDetails.services && bookingDetails.services.length > 0) {
+            const svcsTotal = bookingDetails.services.reduce((sum, s) => sum + s.price * (s.quantity || 1), 0);
+            doc.text(t('booking.servicesSubtotal'), margin, y);
+            doc.text(formatPrice(svcsTotal), pageW - margin, y, { align: 'right' });
+            y += 8;
+        }
+
+        // Total
+        doc.setLineWidth(0.8);
+        doc.setDrawColor(139, 21, 56);
+        doc.line(margin, y, pageW - margin, y);
+        y += 8;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.setTextColor(30, 30, 30);
+        doc.text(t('booking.total'), margin, y);
+        doc.setTextColor(139, 21, 56);
+        doc.text(formatPrice(bookingDetails.total_amount), pageW - margin, y, { align: 'right' });
+        y += 14;
+
+        // Footer
+        doc.setLineWidth(0.5);
+        doc.setDrawColor(139, 21, 56);
+        doc.line(margin, y, pageW - margin, y);
+        y += 7;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.text(`${t('brand')} • City Center • +1 555-SCORPIUS`, pageW / 2, y, { align: 'center' });
+        y += 5;
+        doc.text(t('booking.paymentNote'), pageW / 2, y, { align: 'center' });
+
+        doc.save(`comprobante-${voucherCode}.pdf`);
     };
 
     return (
@@ -561,6 +733,16 @@ export default function BookingForm() {
                                 <p><strong>{t('booking.checkin')}:</strong> {new Date(bookingDetails.check_in).toLocaleDateString()}</p>
                                 <p><strong>{t('booking.checkout')}:</strong> {new Date(bookingDetails.check_out).toLocaleDateString()}</p>
                                 <p><strong>{t('booking.roomType')}:</strong> {bookingDetails.room_type}</p>
+                                {bookingDetails.services && bookingDetails.services.length > 0 && (
+                                    <div style={{ marginTop: '0.75rem' }}>
+                                        <p style={{ marginBottom: '0.4rem' }}><strong>{t('booking.services')}:</strong></p>
+                                        {bookingDetails.services.map(service => (
+                                            <p key={service.id} style={{ paddingLeft: '1rem', fontSize: '0.9rem' }}>
+                                                {getServiceTranslation(service.name)}{service.quantity > 1 ? ` × ${service.quantity}` : ''} — {formatPrice(service.price * (service.quantity || 1))}
+                                            </p>
+                                        ))}
+                                    </div>
+                                )}
                                 <p style={{ fontSize: '1.25rem', color: 'var(--accent-gold)', marginTop: '1rem' }}>
                                     <strong>{t('booking.total')}:</strong> {formatPrice(bookingDetails.total_amount)}
                                 </p>
@@ -607,13 +789,13 @@ export default function BookingForm() {
                             </div>
                         </div>
 
-                        <div className="no-print" style={{ display: 'flex', gap: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem' }}>
                             <button
-                                onClick={handlePrintVoucher}
+                                onClick={handleDownloadVoucher}
                                 className="btn btn-outline"
                                 style={{ flex: 1 }}
                             >
-                                🖨️ {t('booking.printVoucher')}
+                                ⬇️ {t('booking.downloadVoucher')}
                             </button>
                             <button
                                 onClick={() => setShowConfirmationModal(false)}

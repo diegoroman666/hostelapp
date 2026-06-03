@@ -114,6 +114,12 @@ export default function RoomManager() {
         setEditingRoom(null);
     };
 
+    const getRoomTranslation = (roomType) => {
+        const key = roomType?.split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
+        const translated = t(`rooms.${key}`);
+        return translated && translated !== `rooms.${key}` ? translated : roomType;
+    };
+
     if (loading) {
         return <div className="spinner"></div>;
     }
@@ -133,7 +139,7 @@ export default function RoomManager() {
                         {room.image_url && (
                             <img src={room.image_url} alt={room.room_type} className="service-image" />
                         )}
-                        <h3>{room.room_type}</h3>
+                        <h3>{getRoomTranslation(room.room_type)}</h3>
                         <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
                             {room.description}
                         </p>
