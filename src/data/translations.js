@@ -282,6 +282,18 @@ export const translations = {
             lblHeroDescription: "Hero Description",
             phHeroDescription: "Your home away from home...",
             lblHeroImageUrl: "Hero Image URL",
+            lblLogoUrl: "Logo Image URL",
+            revertLogo: "Revert to Original Logo",
+            logoReverted: "Logo reverted to the original symbol!",
+            contactSection: "Contact Information",
+            lblContactAddress: "Address",
+            lblContactPhone: "Phone",
+            lblContactEmail: "Email",
+            lblContactWhatsapp: "WhatsApp",
+            socialSection: "Social Media",
+            lblFacebook: "Facebook URL",
+            lblInstagram: "Instagram URL",
+            lblBooking: "Booking.com URL",
             saving: "Saving...",
             save: "Save Settings",
             success: "Settings saved successfully!",
@@ -291,6 +303,16 @@ export const translations = {
             perNight: "per night",
             loading: "Loading...",
             na: "N/A"
+        },
+        legal: {
+            privacyIntro: "At Scorpius Hostel we value your privacy and are committed to protecting your personal information.",
+            privacyBody1: "We collect only the information necessary to process your bookings, such as your name, email, phone number, and payment details. This information is used exclusively to manage your reservation and improve your experience.",
+            privacyBody2: "We do not share your personal data with third parties, except as required to process payments or comply with legal obligations.",
+            termsIntro: "By booking a stay with Scorpius Hostel, you agree to the following terms of service.",
+            termsBody1: "Check-in time is 2:00 PM and check-out time is 11:00 AM. Guests are responsible for the condition of the room and any damages caused during their stay.",
+            termsBody2: "The hostel reserves the right to refuse service to guests who violate house rules or engage in disruptive behavior.",
+            cancellationIntro: "We understand that plans can change, so we offer a flexible cancellation policy.",
+            cancellationBody1: "Cancellations made up to 48 hours before check-in receive a full refund. Cancellations made within 48 hours of check-in are subject to a one-night charge."
         }
     },
     es: {
@@ -576,6 +598,18 @@ export const translations = {
             lblHeroDescription: "Descripción del Hero",
             phHeroDescription: "Tu hogar lejos de casa...",
             lblHeroImageUrl: "URL de la Imagen del Hero",
+            lblLogoUrl: "URL del Logo",
+            revertLogo: "Volver al Logo Original",
+            logoReverted: "¡Logo restaurado al símbolo original!",
+            contactSection: "Información de Contacto",
+            lblContactAddress: "Dirección",
+            lblContactPhone: "Teléfono",
+            lblContactEmail: "Correo",
+            lblContactWhatsapp: "WhatsApp",
+            socialSection: "Redes Sociales",
+            lblFacebook: "URL de Facebook",
+            lblInstagram: "URL de Instagram",
+            lblBooking: "URL de Booking.com",
             saving: "Guardando...",
             save: "Guardar Configuración",
             success: "¡Configuración guardada con éxito!",
@@ -585,6 +619,16 @@ export const translations = {
             perNight: "por noche",
             loading: "Cargando...",
             na: "N/D"
+        },
+        legal: {
+            privacyIntro: "En Hostal Scorpius valoramos tu privacidad y estamos comprometidos con la protección de tu información personal.",
+            privacyBody1: "Recopilamos únicamente la información necesaria para procesar tus reservas, como tu nombre, correo electrónico, teléfono y datos de pago. Esta información se utiliza exclusivamente para gestionar tu reserva y mejorar tu experiencia.",
+            privacyBody2: "No compartimos tus datos personales con terceros, excepto cuando sea necesario para procesar pagos o cumplir con obligaciones legales.",
+            termsIntro: "Al reservar una estadía en Hostal Scorpius, aceptas los siguientes términos de servicio.",
+            termsBody1: "El horario de check-in es a las 14:00 y el check-out a las 11:00. Los huéspedes son responsables del estado de la habitación y de los daños causados durante su estadía.",
+            termsBody2: "El hostal se reserva el derecho de negar el servicio a huéspedes que violen las normas de convivencia o tengan un comportamiento disruptivo.",
+            cancellationIntro: "Entendemos que los planes pueden cambiar, por eso ofrecemos una política de cancelación flexible.",
+            cancellationBody1: "Las cancelaciones realizadas hasta 48 horas antes del check-in reciben un reembolso completo. Las cancelaciones dentro de las 48 horas previas al check-in están sujetas a un cargo equivalente a una noche."
         }
     },
     de: {

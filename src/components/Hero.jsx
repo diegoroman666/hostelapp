@@ -1,55 +1,31 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
 import { useGlobal } from '../context/GlobalContext';
 
+const DEFAULT_HERO_IMAGE = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=600&fit=crop';
+
 export default function Hero() {
-    const { t } = useGlobal();
-    const [settings, setSettings] = useState({
-        hero_image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=600&fit=crop'
-    });
-    const [loading, setLoading] = useState(true);
+    const { t, siteSettings } = useGlobal();
 
-    useEffect(() => {
-        fetchSettings();
-    }, []);
-
-    const fetchSettings = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('site_settings')
-                .select('key, value');
-
-            if (data && data.length > 0) {
-                const settingsObj = {};
-                data.forEach(item => {
-                    if (item.key === 'hero_image') {
-                        settingsObj[item.key] = item.value;
-                    }
-                });
-                setSettings(prev => ({ ...prev, ...settingsObj }));
-            }
-        } catch (error) {
-            console.warn('Using demo data:', error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const heroImage = siteSettings.hero_image || DEFAULT_HERO_IMAGE;
+    const hostelName = siteSettings.hostel_name || t('brand');
+    const logoUrl = siteSettings.logo_url;
 
     return (
         <section className="hero">
-            {settings.hero_image && (
+            {heroImage && (
                 <img
-                    src={settings.hero_image}
-                    alt={t('brand')}
+                    src={heroImage}
+                    alt={hostelName}
                     className="hero-background"
                 />
             )}
             <div className="hero-content">
                 <h1 className="hero-title">
-                    <span className="scorpio-symbol" style={{ fontSize: '4rem' }}>♏</span>
+                    {logoUrl
+                        ? <img src={logoUrl} alt={hostelName} className="hero-logo-img" />
+                        : <span className="scorpio-symbol" style={{ fontSize: '4rem' }}>♏</span>}
                     <br />
-                    {t('brand')}
+                    {hostelName}
                 </h1>
                 <p className="hero-subtitle">{t('hero.subtitle')}</p>
                 <a href="#booking" className="btn btn-primary btn-lg">

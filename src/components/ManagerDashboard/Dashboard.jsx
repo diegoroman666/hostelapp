@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
+import { sendBookingConfirmation } from '../../lib/emailService';
 import { useGlobal } from '../../context/GlobalContext';
 import ServiceManager from './ServiceManager';
 import RoomManager from './RoomManager';
@@ -31,6 +32,7 @@ export default function Dashboard() {
     }, [activeTab]);
 
     const checkAuth = async () => {
+        if (!supabase) { navigate('/login'); return; }
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
             navigate('/login');
@@ -38,6 +40,7 @@ export default function Dashboard() {
     };
 
     const fetchStats = async () => {
+        if (!supabase) return;
         try {
             const { data: bookingsData, error } = await supabase
                 .from('bookings')
@@ -61,6 +64,7 @@ export default function Dashboard() {
     };
 
     const fetchBookings = async () => {
+        if (!supabase) return;
         try {
             const { data, error } = await supabase
                 .from('bookings')
@@ -84,12 +88,17 @@ export default function Dashboard() {
 
     const sendConfirmationEmail = async () => {
         setSendingEmail(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        alert(`✅ ${t('dashboard.emailSentAlert')} ${selectedBookingForEmail.guest_email}!\n\n${t('dashboard.emailSentAlert2')}`);
+        const result = await sendBookingConfirmation(selectedBookingForEmail);
         setSendingEmail(false);
         setEmailModalOpen(false);
         setSelectedBookingForEmail(null);
+        if (result.ok) {
+            alert(`✅ ${t('dashboard.emailSentAlert')} ${selectedBookingForEmail.guest_email}!`);
+        } else if (result.reason === 'not_configured') {
+            alert('⚠️ EmailJS no está configurado. Agrega las variables VITE_EMAILJS_* en el archivo .env');
+        } else {
+            alert(`❌ Error al enviar el correo: ${result.reason}`);
+        }
     };
 
     const renderContent = () => {

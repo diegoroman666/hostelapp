@@ -7,6 +7,7 @@ import BookingForm from './components/BookingForm';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Login from './components/Login';
+import LegalPage from './components/LegalPage';
 import Dashboard from './components/ManagerDashboard/Dashboard';
 import { GlobalProvider } from './context/GlobalContext';
 import './styles/index.css';
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/booking" element={<><BookingForm /><Contact /></>} />
                         <Route path="/login" element={<Login />} />
+                        <Route path="/legal" element={<LegalPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                     </Routes>
                     <Footer />

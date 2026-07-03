@@ -3,8 +3,17 @@ import { Link } from 'react-router-dom';
 import { useGlobal } from '../context/GlobalContext';
 
 export default function Footer() {
-    const { t } = useGlobal();
+    const { t, siteSettings } = useGlobal();
     const currentYear = new Date().getFullYear();
+
+    const hostelName = siteSettings.hostel_name || t('brand');
+    const address = siteSettings.contact_address || t('contact.address1');
+    const phone = siteSettings.contact_phone || '+1 (555) 123-4567';
+    const email = siteSettings.contact_email || 'info@scorpius.com';
+    const whatsapp = siteSettings.contact_whatsapp || '+1 (555) 987-6543';
+    const facebookUrl = siteSettings.social_facebook || 'https://www.xn--turismovicua-khb.cl/lugar/scorpius-hostel/';
+    const instagramUrl = siteSettings.social_instagram || 'https://www.instagram.com/scorpiushostel/';
+    const bookingUrl = siteSettings.social_booking || 'https://www.booking.com/hotel/cl/scorpius-hostel.es.html';
 
     return (
         <footer style={{
@@ -23,7 +32,7 @@ export default function Footer() {
                             fontFamily: 'var(--font-heading)',
                             fontSize: '1.2rem'
                         }}>
-                            ♏ SCORPIUS
+                            ♏ {hostelName}
                         </h4>
                         <p style={{
                             color: 'var(--text-secondary)',
@@ -99,28 +108,28 @@ export default function Footer() {
                                 marginBottom: '0.5rem',
                                 fontSize: '0.9rem'
                             }}>
-                                📍 {t('contact.address1')}
+                                📍 {address}
                             </li>
                             <li style={{
                                 color: 'var(--text-secondary)',
                                 marginBottom: '0.5rem',
                                 fontSize: '0.9rem'
                             }}>
-                                📞 +1 (555) 123-4567
+                                📞 {phone}
                             </li>
                             <li style={{
                                 color: 'var(--text-secondary)',
                                 marginBottom: '0.5rem',
                                 fontSize: '0.9rem'
                             }}>
-                                ✉️ info@scorpius.com
+                                ✉️ {email}
                             </li>
                             <li style={{
                                 color: 'var(--text-secondary)',
                                 marginBottom: '0.5rem',
                                 fontSize: '0.9rem'
                             }}>
-                                💬 WhatsApp: +1 (555) 987-6543
+                                💬 WhatsApp: {whatsapp}
                             </li>
                         </ul>
                     </div>
@@ -140,18 +149,18 @@ export default function Footer() {
                             marginBottom: '1.5rem',
                             fontSize: '1.5rem'
                         }}>
-                            <a href="#" style={{
+                            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" style={{
                                 color: 'var(--text-secondary)',
                                 transition: 'var(--transition)'
-                            }} className="social-link">📘</a>
-                            <a href="#" style={{
+                            }} className="social-link" aria-label="Facebook">📘</a>
+                            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" style={{
                                 color: 'var(--text-secondary)',
                                 transition: 'var(--transition)'
-                            }} className="social-link">📷</a>
-                            <a href="#" style={{
+                            }} className="social-link" aria-label="Instagram">📷</a>
+                            <a href={bookingUrl} target="_blank" rel="noopener noreferrer" style={{
                                 color: 'var(--text-secondary)',
                                 transition: 'var(--transition)'
-                            }} className="social-link">🐦</a>
+                            }} className="social-link" aria-label="Booking.com">🏨</a>
                         </div>
                         <p style={{
                             color: 'var(--text-secondary)',
@@ -189,7 +198,7 @@ export default function Footer() {
                             fontSize: '0.9rem',
                             margin: 0
                         }}>
-                            © {currentYear} Scorpius Hostel. {t('footer.copyright')}
+                            © {currentYear} {hostelName}. {t('footer.copyright')}
                         </p>
                         <p style={{
                             color: 'var(--text-secondary)',
@@ -211,27 +220,27 @@ export default function Footer() {
                         justifyContent: 'center',
                         flexWrap: 'wrap'
                     }}>
-                        <a href="#" style={{
+                        <Link to="/legal#privacy" style={{
                             color: 'var(--text-secondary)',
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
                             {t('footer.privacyPolicy')}
-                        </a>
-                        <a href="#" style={{
+                        </Link>
+                        <Link to="/legal#terms" style={{
                             color: 'var(--text-secondary)',
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
                             {t('footer.termsOfService')}
-                        </a>
-                        <a href="#" style={{
+                        </Link>
+                        <Link to="/legal#cancellation" style={{
                             color: 'var(--text-secondary)',
                             textDecoration: 'none',
                             fontSize: '0.85rem'
                         }} className="footer-link">
                             {t('footer.cancellationPolicy')}
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

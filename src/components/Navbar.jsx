@@ -9,23 +9,25 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Consume Global Context
-    const { language, setLanguage, currency, setCurrency, t } = useGlobal();
+    const { language, setLanguage, currency, setCurrency, t, siteSettings } = useGlobal();
+
+    const hostelName = siteSettings.hostel_name || 'SCORPIUS';
+    const logoUrl = siteSettings.logo_url;
 
     useEffect(() => {
-        // Check current session
+        const savedTheme = localStorage.getItem('theme') || 'night';
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if (!supabase) return;
+
         supabase.auth.getSession().then(({ data: { session } }) => {
             setUser(session?.user ?? null);
         });
 
-        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
         });
-
-        // Load theme from localStorage
-        const savedTheme = localStorage.getItem('theme') || 'night';
-        setTheme(savedTheme);
-        document.documentElement.setAttribute('data-theme', savedTheme);
 
         return () => subscription.unsubscribe();
     }, []);
@@ -57,8 +59,10 @@ export default function Navbar() {
 
                     {/* CENTER: Logo */}
                     <Link to="/" className="navbar-logo-center" onClick={() => setIsMenuOpen(false)}>
-                        <span className="scorpio-symbol">♏</span>
-                        <span className="logo-text">SCORPIUS</span>
+                        {logoUrl
+                            ? <img src={logoUrl} alt={hostelName} className="navbar-logo-img" />
+                            : <span className="scorpio-symbol">♏</span>}
+                        <span className="logo-text">{hostelName}</span>
                     </Link>
 
                     {/* RIGHT: Quick Actions */}
@@ -132,7 +136,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="sidebar-footer">
-                    <p>© 2026 Scorpius Hostel</p>
+                    <p>© 2026 {hostelName}</p>
                 </div>
             </aside>
         </>

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { translations, currencyRates } from '../data/translations';
+import { supabase } from '../lib/supabaseClient';
 
 const GlobalContext = createContext();
 
@@ -36,6 +37,30 @@ export const GlobalProvider = ({ children }) => {
         setCurrencyState(curr);
         try { localStorage.setItem('currency', curr); } catch (e) { }
     };
+
+    // Site settings editable by the manager (name, logo, contact info, hero…)
+    const [siteSettings, setSiteSettings] = useState({});
+
+    const refreshSettings = async () => {
+        if (!supabase) return;
+        try {
+            const { data, error } = await supabase
+                .from('site_settings')
+                .select('key, value');
+            if (error) throw error;
+            if (data) {
+                const obj = {};
+                data.forEach(item => { obj[item.key] = item.value; });
+                setSiteSettings(obj);
+            }
+        } catch (error) {
+            console.warn('Could not load site settings:', error.message);
+        }
+    };
+
+    useEffect(() => {
+        refreshSettings();
+    }, []);
 
     // Helper to get nested translation. Returns the key itself if not found.
     const t = (path) => {
@@ -83,7 +108,9 @@ export const GlobalProvider = ({ children }) => {
         currency,
         setCurrency,
         t,
-        formatPrice
+        formatPrice,
+        siteSettings,
+        refreshSettings
     };
 
     return (

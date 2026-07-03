@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { sendBookingConfirmation } from '../lib/emailService';
 import ServiceCard from './ServiceCard';
 import { useGlobal } from '../context/GlobalContext';
 
@@ -55,6 +56,7 @@ export default function BookingForm() {
     }, []);
 
     const fetchRoomTypes = async () => {
+        if (!supabase) { setDemoMode(true); return; }
         try {
             const { data, error } = await supabase
                 .from('room_prices')
@@ -79,6 +81,7 @@ export default function BookingForm() {
     };
 
     const fetchServices = async () => {
+        if (!supabase) return;
         try {
             const { data, error } = await supabase.from('services').select('*').eq('is_active', true);
             if (error) return;
@@ -157,14 +160,16 @@ export default function BookingForm() {
 
             const roomName = t(`rooms.${selectedRoom.key}`) || selectedRoom.room_type;
 
+            const details = {
+                ...bookingData,
+                room_type: roomName,
+                price_per_night: selectedRoom.price_per_night,
+                nights: nights,
+                services: getSelectedServices()
+            };
+
             if (demoMode) {
-                setBookingDetails({
-                    ...bookingData,
-                    room_type: roomName,
-                    price_per_night: selectedRoom.price_per_night,
-                    nights: nights,
-                    services: getSelectedServices()
-                });
+                setBookingDetails(details);
                 setShowReviewModal(false);
                 setShowConfirmationModal(true);
                 resetForm();
@@ -179,18 +184,14 @@ export default function BookingForm() {
                         throw error;
                     }
                 }
-                setBookingDetails({
-                    ...bookingData,
-                    id: data?.[0]?.id || `RES-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-                    room_type: roomName,
-                    price_per_night: selectedRoom.price_per_night,
-                    nights: nights,
-                    services: getSelectedServices()
-                });
+                details.id = data?.[0]?.id || `RES-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+                setBookingDetails(details);
                 setShowReviewModal(false);
                 setShowConfirmationModal(true);
                 resetForm();
             }
+
+            await sendBookingConfirmation(details);
 
         } catch (error) {
             console.error('Booking Error:', error);

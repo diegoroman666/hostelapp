@@ -17,6 +17,12 @@ export default function Login() {
         setLoading(true);
         setError('');
 
+        if (!supabase) {
+            setError('Base de datos no disponible. Verifica la configuración.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,

@@ -374,6 +374,22 @@ p {
   justify-content: center;
 }
 
+/* Custom logo image keeps the same footprint as the ♏ symbol (2rem) */
+.navbar-logo-img {
+  height: 2rem;
+  width: 2rem;
+  object-fit: contain;
+  transition: filter 0.3s;
+}
+
+/* Hero logo image mirrors the 4rem ♏ symbol */
+.hero-logo-img {
+  height: 4rem;
+  width: 4rem;
+  object-fit: contain;
+  display: inline-block;
+}
+
 .logo-text {
   font-family: var(--font-heading);
   font-weight: 900;
